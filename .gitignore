@@ -1,0 +1,16 @@
+# visual studio crap
+.vs/
+
+# binary stuff
+*/[Bb]in/*
+*/[Oo]bj/*
+*/[Ll]og/*
+*.exe
+*.dll
+
+# user-specific files
+*.user
+*.userosscache
+*.sln.docstates
+
+
