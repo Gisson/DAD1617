@@ -6,10 +6,16 @@ using System.Threading.Tasks;
 
 namespace CommonTypes
 {
-    class CommonTypes
+    class MessageArgs : MarshalByRefObject
     {
-        static void Main(string[] args)
-        {
-        }
+
     }
+
+    abstract class IRemoteOperator: MarshalByRefObject
+    {
+        //Receives a signal from the PuppetMaster
+        public abstract void receiveSignal();
+
+    }
+
 }

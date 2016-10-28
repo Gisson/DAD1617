@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using CommonTypes;
 
-namespace PuppetMaster
+namespace Operator
 {
-    class PuppetMaster
+    class RemoteOperator : IRemoteOperator
     {
-        static void Main(string[] args)
+        public void receiveMessage()
         {
+            /*TODO*/
         }
     }
 }
