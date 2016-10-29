@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace CommonTypes
 {
-    class MessageArgs : MarshalByRefObject
+    public class ConnectionArgs : MarshalByRefObject
     {
+        public string url { get; set; }
+        public int port { get; set; }
 
     }
 
@@ -27,4 +29,5 @@ namespace CommonTypes
     {
         public abstract void startOperator(/* TODO add args */);
     }
+
 }
