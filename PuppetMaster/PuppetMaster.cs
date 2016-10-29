@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PuppetMaster
 {
-    class Program
+    class PuppetMaster
     {
         static void Main(string[] args)
         {

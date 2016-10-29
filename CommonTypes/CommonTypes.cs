@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Operator
+namespace CommonTypes
 {
-    class Program
+    class CommonTypes
     {
         static void Main(string[] args)
         {
