@@ -22,4 +22,9 @@ namespace CommonTypes
     {
         public abstract void registerClient(string name);
     }
+
+    public abstract class IRemoteProcessCreationService : MarshalByRefObject
+    {
+        public abstract void startOperator(/* TODO add args */);
+    }
 }

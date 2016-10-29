@@ -6,8 +6,17 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Operator", "DADStorm\Operator.csproj", "{CE4AFE0C-748C-4887-B77E-52183C63205C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMaster", "PuppetMaster\PuppetMaster.csproj", "{05C165A1-9F1F-43A3-AD9A-9A785FCA80F2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2ED9C532-960F-4B8C-A08A-EB92336E2144} = {2ED9C532-960F-4B8C-A08A-EB92336E2144}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTypes", "CommonTypes\CommonTypes.csproj", "{98034913-94C8-4545-94C3-83EC11514F9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCS", "PCS\PCS.csproj", "{2ED9C532-960F-4B8C-A08A-EB92336E2144}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CE4AFE0C-748C-4887-B77E-52183C63205C} = {CE4AFE0C-748C-4887-B77E-52183C63205C}
+		{98034913-94C8-4545-94C3-83EC11514F9F} = {98034913-94C8-4545-94C3-83EC11514F9F}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +36,10 @@ Global
 		{98034913-94C8-4545-94C3-83EC11514F9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98034913-94C8-4545-94C3-83EC11514F9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98034913-94C8-4545-94C3-83EC11514F9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ED9C532-960F-4B8C-A08A-EB92336E2144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ED9C532-960F-4B8C-A08A-EB92336E2144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ED9C532-960F-4B8C-A08A-EB92336E2144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ED9C532-960F-4B8C-A08A-EB92336E2144}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
