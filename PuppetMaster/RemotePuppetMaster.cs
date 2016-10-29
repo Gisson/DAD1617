@@ -5,13 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using CommonTypes;
 
-namespace Operator
+namespace PuppetMaster
 {
-    class RemoteOperator : IRemoteOperator
+    class RemotePuppetMaster : IRemotePuppetMaster
     {
-
-
-        public override void receiveSignal()
+        public override void registerClient(string name)
         {
             /*TODO*/
             throw new NotImplementedException();
