@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command.cs" />
     <Compile Include="CommonTypes.cs" />
     <Compile Include="OperatorConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

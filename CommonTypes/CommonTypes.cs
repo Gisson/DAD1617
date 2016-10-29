@@ -18,6 +18,8 @@ namespace CommonTypes
         //Receives a signal from the PuppetMaster
         public abstract void receiveSignal();
 
+        /// <summary> Receives and enqueues a command to be executed by the Operator </summary>
+        public abstract void execute(Command cmd);
     }
 
     public abstract class IRemotePuppetMaster : MarshalByRefObject
