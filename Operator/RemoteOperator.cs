@@ -16,5 +16,14 @@ namespace Operator
             /*TODO*/
             throw new NotImplementedException();
         }
+        public override void receiveMessage(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void execute(Command cmd)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
