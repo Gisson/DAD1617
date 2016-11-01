@@ -30,7 +30,8 @@ namespace CommonTypes
 
     public abstract class IRemotePuppetMaster : MarshalByRefObject
     {
-        public abstract void registerClient(string name,string url,int port); 
+        public abstract void registerClient(string name,string url,int port);
+        public abstract void receiveLog(string clientName, string logMessage);
     }
 
     public abstract class IRemoteProcessCreationService : MarshalByRefObject
