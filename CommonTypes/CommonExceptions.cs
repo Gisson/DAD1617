@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonTypes
+namespace CommonExceptions
 {
     public class AlreadyRegisteredException : Exception
     {
@@ -15,7 +15,9 @@ namespace CommonTypes
 
 
     }
-
+}
+namespace CommandExceptions
+{
     public class UnaccessibleClientException : Exception
     {
         public UnaccessibleClientException(string clientName) : base("Client " + clientName + " is unaccessible!")
@@ -23,4 +25,21 @@ namespace CommonTypes
 
         }
     }
+
+    public class WrongCommandFormat : Exception
+    {
+        public WrongCommandFormat(string commandName) : base("Format for  " + commandName + " is is invalid!")
+        {
+
+        }
+    }
+
+    public class UnexistentCommand : Exception
+    {
+        public UnexistentCommand(string commandName) : base("Command " + commandName + " doesn't exist!")
+        {
+
+        }
+    }
+
 }
