@@ -2,7 +2,7 @@
 
 namespace CommonTypes
 {
-    [Serializable] /* Marshal by Value; Note: attributes are no inherited */
+    [Serializable] /* Marshal by Value; Note: attributes are not inherited */
     public abstract class Command
     {
         private string _name;
@@ -15,10 +15,10 @@ namespace CommonTypes
         [Serializable]
         public class Start : Command
         {
-            private string _operatoId;
+            private string _operatorId;
             public Start(string opID) : base("Start")
             {
-                _operatoId = opID;
+                _operatorId = opID;
             }
         }
 
