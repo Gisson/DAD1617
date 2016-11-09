@@ -7,7 +7,10 @@ using CommonTypes;
 
 namespace Operator
 {
-    class RemoteOperator : IRemoteOperator
+    /// <summary>
+    /// Implements the services that the Operator exports via IRemoteOperator
+    /// </summary>
+    class OperatorServices : IRemoteOperator
     {
 
 
