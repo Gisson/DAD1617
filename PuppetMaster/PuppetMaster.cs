@@ -7,7 +7,6 @@ using CommonTypes;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Runtime.Remoting.Channels;
-using CommonTypes.Commands;
 using CommandExceptions;
 
 namespace PuppetMaster

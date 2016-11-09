@@ -20,11 +20,16 @@ namespace CommonTypes
 
     public abstract class IRemoteOperator: MarshalByRefObject
     {
-        //Receives a signal from the PuppetMaster
-        public abstract void receiveSignal();
+        /* *** commands *** */
+        public abstract void start();
+        public abstract void interval(int milliseconds);
+        public abstract void status();
+        public abstract void crash();
+        public abstract void freeze();
+        public abstract void unfreeze();
+        //note: the wait command is not remote
 
-        /// <summary> Receives and enqueues a command to be executed by the Operator </summary>
-        public abstract void execute(Command cmd);
+
         public abstract void receiveMessage(string message);// Might not be needed
     }
 

@@ -11,17 +11,38 @@ namespace Operator
     {
 
 
-        public override void receiveSignal()
-        {
-            /*TODO*/
-            throw new NotImplementedException();
-        }
         public override void receiveMessage(string message)
         {
             throw new NotImplementedException();
         }
+        
 
-        public override void execute(Command cmd)
+        public override void start()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void interval(int milliseconds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void status()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void crash()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void freeze()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void unfreeze()
         {
             throw new NotImplementedException();
         }
