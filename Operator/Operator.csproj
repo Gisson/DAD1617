@@ -65,6 +65,7 @@
     <Compile Include="OperatorServices.cs" />
     <Compile Include="Routing\RoutingPolicy.cs" />
     <Compile Include="Routing\Stdout.cs" />
+    <Compile Include="StreamEngine.cs" />
     <Compile Include="StreamInputs\Stdin.cs" />
     <Compile Include="StreamInputs\StreamInput.cs" />
     <Compile Include="StreamOperators\StreamOperator.cs" />
