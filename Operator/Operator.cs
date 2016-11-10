@@ -52,17 +52,17 @@ namespace Operator
 
             TcpChannel channel = new TcpChannel(port);
 
-            /* register our service */
             ChannelServices.RegisterChannel(channel, false);
-            RemotingConfiguration.RegisterWellKnownServiceType(
-                typeof(OperatorServices), "op",
-                WellKnownObjectMode.Singleton);
 
-            System.Console.WriteLine("Press <enter> to terminate Operator...");
-            System.Console.ReadLine();
+            /* register our service */
+            OperatorServices op = new OperatorServices();
+            RemotingServices.Marshal(op, "op", typeof(OperatorServices));
+
+            //System.Console.WriteLine("Press <enter> to terminate Operator...");
+            //System.Console.ReadLine(); /* can't use StreamInputs.Stdin with this line here */
 
             System.Console.WriteLine("Operator reached end of main().");
-            Thread.Sleep(500);
+            Thread.Sleep(5000); /* FIXME */
         }
     }
 }
