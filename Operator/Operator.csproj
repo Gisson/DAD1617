@@ -66,6 +66,7 @@
     <Compile Include="StreamInputs\Stdin.cs" />
     <Compile Include="StreamInputs\StreamInput.cs" />
     <Compile Include="StreamOperators\StreamOperator.cs" />
+    <Compile Include="StreamOperators\Uniq.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
