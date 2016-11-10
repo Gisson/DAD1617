@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonTypes;
+using System.Diagnostics;
 
 namespace Operator
 {
@@ -37,7 +38,7 @@ namespace Operator
 
         public override void crash()
         {
-            throw new NotImplementedException();
+            Process.GetCurrentProcess().Kill();
         }
 
         public override void freeze()
