@@ -8,28 +8,70 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Runtime.Remoting.Channels;
 using CommandExceptions;
+using System.Collections.Concurrent;
+using System.Threading;
+using System.Threading.Tasks;
+
+/* ********************** HOW THIS WORKS ***************************
+ * App.cs is the starting point.
+ * It creates a form, and that form contains the
+ * PuppetMaster within (can't be backwards because: threads).
+ * As soon as we choose the config file from the UI by
+ * pressing "Browse...", all text is copied to the form window.
+ * Meanwhile, all commands are parsed and **STORED** in a queue - DON'T RUN ANYTHING YET.
+ * If the "Run" button is pressed, all commands are executed asynchronously,
+ * with the exception of the WAIT command.
+ * If the "Step" button is pressed, only one thread runs while
+ * all others are blocked until further orders
+ */
 
 namespace PuppetMaster
 {
     class PuppetMaster
     {
+        public ConcurrentQueue<ICommand> Commands;
+        public Parser Parser;
+
         private const string psName="PuppetMaster";
         private const int port = 10000;
 
-        static void Main(string[] args)
-        {
-            RemotePuppetMaster rpm = startPuppetMaster();
+        public PuppetMaster() {
+            Commands = new ConcurrentQueue<ICommand>();
+            Parser = new Parser(this);
+
+           /* RemotePuppetMaster rpm = startPuppetMaster();
             rpm.readConfig();
             string c;
-            while (true)
-            {
+            while (true) {
                 c = Console.ReadLine();
                 readCommand(c);
                 //Need to send execution command
+            }*/
+        }
+
+          //asynchronous command execution
+        //stepHandle autoblocks any other threads untill the current one finishes
+        static EventWaitHandle stepHandle = new AutoResetEvent(false);
+
+        public void executeInstructions(bool step) {
+            ICommand command;
+            //loop until queue is empty
+            if (Commands.TryDequeue(out command)) {
+                //step instruction
+                if (step) { //start new blocked thread
+                    new Thread(() => stepHandle.WaitOne()).Start();
+                    stepHandle.Set();  //wake up the thread
+                }
+                //run all instructions
+                else {  //launch new thread
+                    new Thread(() => executeInstructions(false)).Start();
+                }
+                command.execute();
             }
         }
 
-        static RemotePuppetMaster startPuppetMaster()
+
+     /*   private RemotePuppetMaster startPuppetMaster()
         {
             //Should RemotePuppetMaster handle this instead?
             TcpChannel channel = new TcpChannel(port);
@@ -38,7 +80,9 @@ namespace PuppetMaster
             RemotingServices.Marshal(rpm, psName, typeof(RemotePuppetMaster));
             return rpm;
         }
+    */
 
+        /*
         static Command readCommand(string input)
         {
             string[] splitted = input.Split(' ');
@@ -73,6 +117,6 @@ namespace PuppetMaster
                 default:
                     throw new UnexistentCommand(splitted[0]);
             }
-        }
+        }*/
     }
 }

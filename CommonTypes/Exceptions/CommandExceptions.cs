@@ -4,20 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonExceptions
-{
-    public class AlreadyRegisteredException : Exception
-    {
-        public AlreadyRegisteredException() : base("Client already registered")
-        {
-
-        }
-
-
-    }
-}
-namespace CommandExceptions
-{
+namespace CommonTypes.Exceptions {
+    [Serializable]
     public class UnaccessibleClientException : Exception
     {
         public UnaccessibleClientException(string clientName) : base("Client " + clientName + " is unaccessible!")
@@ -43,3 +31,4 @@ namespace CommandExceptions
     }
 
 }
+
