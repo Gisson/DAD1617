@@ -65,6 +65,7 @@
     <Compile Include="OperatorServices.cs" />
     <Compile Include="StreamInputs\Stdin.cs" />
     <Compile Include="StreamInputs\StreamInput.cs" />
+    <Compile Include="StreamOperators\StreamOperator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
