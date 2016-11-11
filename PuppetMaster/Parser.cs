@@ -12,17 +12,12 @@ namespace PuppetMaster {
     public enum LineSyntax { VALID, INVALID, COMMENT };
 
 
-    class Parser {
-        private PuppetMaster PM;
-        public Action<String, LineSyntax> PreviewTextBox_Update; //explained below
+    public sealed class Parser {
 
-        /* constructor receives a delegate as an argument
-         * so the class is allowed to update the visual form
-         * while parsing the file
-         */
-        public Parser(PuppetMaster pm) {
-            PM = pm;
-        }
+        private static readonly Parser instance = new Parser();
+        static Parser() { }
+
+        private Parser() { }
 
         //Regex patterns for all commands: i'll clean this up sometime
         private const String RGX_COMMENT = @"%.*";
@@ -34,6 +29,7 @@ namespace PuppetMaster {
         private const String RGX_UNFREEZE = @"UNFREEZE \w+ \d+";
         private const String RGX_WAIT = @"WAIT \d+";
         private const String RGX_LOG = @"LOGGINGLEVEL full|light";
+        private const String RGX_SEMANTICS = @"SEMANTICS at-most-once|at-least-once|exactly-once";
 
         private const String RGX_INPUT = @"\w+ INPUT_OPS \w+(,\w+)* ";
         private const String RGX_REP = @"REP_FACT \d+ ROUTING primary|hashing\(\d+\)|random ";
@@ -43,7 +39,11 @@ namespace PuppetMaster {
 
 
         //Parsing method
-        public void execute(String pathToFile) {
+        /* receives a delegate as an argument
+         * so the class is allowed to update the visual form
+         * while parsing the file
+         */
+        public static void execute(String pathToFile, Action<String, LineSyntax> PreviewTextBox_Update) {
             String line;
             StreamReader file = new StreamReader(pathToFile);
             //regex init
@@ -56,6 +56,7 @@ namespace PuppetMaster {
             Regex rgxUnfreeze = new Regex(RGX_UNFREEZE, RegexOptions.IgnoreCase);
             Regex rgxWait = new Regex(RGX_WAIT, RegexOptions.IgnoreCase);
             Regex rgxLog = new Regex(RGX_LOG, RegexOptions.IgnoreCase);
+            Regex rgxSemantics = new Regex(RGX_SEMANTICS, RegexOptions.IgnoreCase);
             Regex rgxConf = new Regex(RGX_CONF, RegexOptions.IgnoreCase);
 
             //read each line from file
@@ -101,25 +102,32 @@ namespace PuppetMaster {
                     int millisec = Int32.Parse(fields[1]);
                     command = new Wait(millisec);
                 }
+                else if (rgxLog.IsMatch(line)) {
+                    String loggingLevel = fields[1];
+                    command = new Log(loggingLevel);
+                }
+                else if (rgxSemantics.IsMatch(line)) {
+                    String semantics = fields[1];
+                    command = new SetSemantics(semantics);
+                }
                 //MISSING: LOG & SEMANTICS
 
                     //configuration of operator
                 else if (rgxConf.IsMatch(line)) {
-                    /*   opID = fields[0];
-                       inputOps = fields[2];
-                       repFact = fields[4];
-                       routing = fields[6];
-                       address = fields[8];
-                       string[] opSpec = fields.Skip(7).ToArray();
-                       ICommand conf = new ConfigureOperator(opID, inputOps, repFact, routing, address, opSpec);*/
-                    command = new ConfigureOperator();
+                    String opID = fields[0];
+                    String[] inputOps = fields[2].Split(',');
+                    int repFact = Int32.Parse(fields[4]);
+                    String routing = fields[6];
+                    String[] addresses = fields[8].Split(',');
+                    String[] opSpec = fields.Skip(10).ToArray();
+                    command = new ConfigureOperator(opID, inputOps, repFact, routing, addresses, opSpec);
                 } //invalid command
                 else {
                     PreviewTextBox_Update(line, LineSyntax.INVALID);
                     continue;
                 }
                 //store commands
-                if (command != null) { PM.Commands.Enqueue(command); }
+                if (command != null) { PuppetMaster.Commands.Enqueue(command); }
                 PreviewTextBox_Update(line, LineSyntax.VALID);
             }
             file.Close();

@@ -11,14 +11,10 @@ using System.IO;
 
 namespace PuppetMaster {
     public partial class DADStormForm : Form {
-        private PuppetMaster PM;
         Queue<int> stepPositions; //location of all valid commands on the "debugger"
 
         public DADStormForm() {
-            PM = new PuppetMaster();
             stepPositions = new Queue<int>();
-            /*forms & delegates shenanigans*/
-            PM.Parser.PreviewTextBox_Update = new Action<String, LineSyntax>(previewTextBox_Update);
             InitializeComponent();
             previewTextBox.ReadOnly = true;
         }
@@ -33,7 +29,7 @@ namespace PuppetMaster {
             //stepPoint.Location = new Point(stepPoint.Location.X, previewTextBox.SelectionStart);
 
             //order pm to step
-            PM.executeInstructions(true);
+            PuppetMaster.executeInstructions(true);
             if (!stepPositions.Any()) { //disable buttons
                 runButton.Enabled = false;
                 stepButton.Enabled = false;
@@ -42,7 +38,7 @@ namespace PuppetMaster {
 
 
         private void runButton_Click(object sender, EventArgs e) {
-            PM.executeInstructions(false);
+            PuppetMaster.executeInstructions(false);
             //disable buttons
             runButton.Enabled = false;
             stepButton.Enabled = false;
@@ -53,17 +49,20 @@ namespace PuppetMaster {
             OpenFileDialog fDialog = new OpenFileDialog();
             openFileDialog1.Title = "Open Configuration File";
             openFileDialog1.Filter = "Config Files|*.config|All Files|*.*";
-            openFileDialog1.InitialDirectory = Directory.GetCurrentDirectory().ToString();
+            openFileDialog1.InitialDirectory = PuppetMaster.getSourceDir();
             openFileDialog1.ShowDialog();
             //store selected filename
             String configFilename = openFileDialog1.FileName;
-            if (configFilename != null) {
+            if (File.Exists(configFilename)) {
                 pathTextBox.Text = configFilename;
                 //clean current preview text box
                 previewTextBox.Text = "";
+                //empty intruction queue, if any
+                PuppetMaster.clearCommands();
 
                 //tell puppet master to start parsing
-                PM.Parser.execute(configFilename);
+                //send action delegate because forms & threads shenanigans
+                Parser.execute(configFilename, new Action<String, LineSyntax>(previewTextBox_Update));
             }
         }
 
