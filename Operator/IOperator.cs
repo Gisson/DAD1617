@@ -8,16 +8,17 @@ namespace Operator {
     /// <summary>
     /// Abstraction layer to call internal Operator methods
     /// </summary>
-    interface IOperator {
-        void RegisterOutputOperator(String operatorURL); //keeping track of "child" operators to send tuples
-        void ReceiveTuple(String tuple); //receive tuple from input operator
+    public interface IOperator {
+        void registerOutputOperator(String operatorURL); //keeping track of "child" operators to send tuples
+        void receiveTuple(String tuple); //receive tuple from input operator
 
         /* *** command request by operatorService *** */
-        void Start();
-        void Interval(int milliseconds);
-        void Freeze();
-        void Unfreeze();
-        void Crash();
+        void start();
+        void interval(int milliseconds);
+        void freeze();
+        void unfreeze();
+        void crash();
+        void status();
 
 
     }

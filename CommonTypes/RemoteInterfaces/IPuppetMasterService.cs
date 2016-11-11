@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CommonTypes.RemoteInterfaces {
-    class IPuppetMasterService {
+    public interface IPuppetMasterService {
+        void writeIntoLog(string opID, string logMessage);
     }
 }

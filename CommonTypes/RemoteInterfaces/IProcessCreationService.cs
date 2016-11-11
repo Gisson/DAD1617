@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CommonTypes.RemoteInterfaces {
-    interface IProcessCreationService {
-        void startOperator(/* TODO add args */);
-        void receiveMessage(string message);
+    public interface IProcessCreationService {
+        void createOperator(String args);
     }
 }

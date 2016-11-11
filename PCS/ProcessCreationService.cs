@@ -4,18 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using CommonTypes.RemoteInterfaces;
 
-namespace PCS
-{
-    class ProcessCreationService : IProcessCreationService {
-        IDictionary<String, IList<String>> OperatorTable; /*table with key=op-name|value=all-replica-addresses*/
-
-        [STAThread]
-        public static void Main() {
-            String arguments = "tcp://1.2.3.8:11000/op";
-            Process process = Process.Start("Operator.exe", arguments);
-            Console.ReadLine();
-
+namespace PCS {
+    class ProcessCreationService : MarshalByRefObject, IProcessCreationService {
+        private const String OPERATOR = "Operator.exe";
+        
+        //op main syntax: OpID opURL replicaIndex inputFiles inputOpURLs Routing OpSpec OpParams;
+        public void createOperator(String args) {
+            System.Console.WriteLine(args);
+            Process process = Process.Start(OPERATOR, args);
         }
     }
 }

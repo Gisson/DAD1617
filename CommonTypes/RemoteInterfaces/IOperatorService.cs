@@ -7,18 +7,22 @@ using System.Threading.Tasks;
 namespace CommonTypes.RemoteInterfaces {
     /*Methods provided to the exterior classes to communicate with OperatorService*/
     public interface IOperatorService {
+        //for logging when needed
+        void connectToPuppetMaster(String puppetMasterURL);
 
-        void ConnectToPuppetMaster(String puppetMasterURL); //for logging when needed
-        void RequestInput(String operatorURL); //registers as a subscriber: ask to input operator to provide tuples when possible
-        void EmitTuple(String operatorURL); //request for child operator to receive tuples
+        //registers as a subscriber: ask to input operator to provide tuples when possible
+        void requestInput(String opID, String opURL, int replicaIndex);
+
+        //request for child operator to receive tuples
+        void emitTuple(String operatorURL);
 
         /* *** commands by puppet master *** */
-        void ForceStart();
-        void ForceInterval(int milliseconds);
-        void ForceFreeze();
-        void ForceUnfreeze();
-        void ForceCrash();
-        void GetStatus();
+        void forceStart();
+        void forceInterval(int milliseconds);
+        void forceFreeze();
+        void forceUnfreeze();
+        void forceCrash();
+        void getStatus();
         //note: the wait command is not remote
     }
 }
