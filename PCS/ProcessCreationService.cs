@@ -13,7 +13,13 @@ namespace PCS {
         //op main syntax: OpID opURL replicaIndex inputFiles inputOpURLs Routing OpSpec OpParams;
         public void createOperator(String args) {
             System.Console.WriteLine(args);
-            Process process = Process.Start(OPERATOR, args);
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            startInfo.FileName = OPERATOR;
+            startInfo.Arguments = args;
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            Process process = new Process();
+            process.StartInfo = startInfo;
+            process.Start();
         }
     }
 }
