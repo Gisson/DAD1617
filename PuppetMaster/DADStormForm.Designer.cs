@@ -31,8 +31,6 @@
             this.stepButton = new System.Windows.Forms.Button();
             this.runButton = new System.Windows.Forms.Button();
             this.dadstorm = new System.Windows.Forms.OpenFileDialog();
-            this.shapeContainer1 = new Microsoft.VisualBasic.PowerPacks.ShapeContainer();
-            this.stepPoint = new Microsoft.VisualBasic.PowerPacks.OvalShape();
             this.SuspendLayout();
             // 
             // label1
@@ -139,27 +137,6 @@
             // 
             this.dadstorm.FileName = "dadstorm";
             // 
-            // shapeContainer1
-            // 
-            this.shapeContainer1.Location = new System.Drawing.Point(0, 0);
-            this.shapeContainer1.Margin = new System.Windows.Forms.Padding(0);
-            this.shapeContainer1.Name = "shapeContainer1";
-            this.shapeContainer1.Shapes.AddRange(new Microsoft.VisualBasic.PowerPacks.Shape[] {
-            this.stepPoint});
-            this.shapeContainer1.Size = new System.Drawing.Size(984, 561);
-            this.shapeContainer1.TabIndex = 8;
-            this.shapeContainer1.TabStop = false;
-            // 
-            // stepPoint
-            // 
-            this.stepPoint.BackColor = System.Drawing.Color.Firebrick;
-            this.stepPoint.BackStyle = Microsoft.VisualBasic.PowerPacks.BackStyle.Opaque;
-            this.stepPoint.BorderColor = System.Drawing.Color.Firebrick;
-            this.stepPoint.Location = new System.Drawing.Point(35, 150);
-            this.stepPoint.Name = "stepPoint";
-            this.stepPoint.Size = new System.Drawing.Size(10, 10);
-            this.stepPoint.Visible = false;
-            // 
             // DADStormForm
             // 
             this.AccessibleDescription = "";
@@ -175,7 +152,6 @@
             this.Controls.Add(this.pathTextBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.shapeContainer1);
             this.Name = "DADStormForm";
             this.Text = "DADStorm";
             this.ResumeLayout(false);
@@ -193,7 +169,5 @@
         private System.Windows.Forms.Button stepButton;
         private System.Windows.Forms.Button runButton;
         private System.Windows.Forms.OpenFileDialog dadstorm;
-        private Microsoft.VisualBasic.PowerPacks.ShapeContainer shapeContainer1;
-        private Microsoft.VisualBasic.PowerPacks.OvalShape stepPoint;
     }
 }
