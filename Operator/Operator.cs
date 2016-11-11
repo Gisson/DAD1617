@@ -19,6 +19,7 @@ namespace Operator {
         string myOpId;
         string myOpURL;
         int myReplicaIndex;
+        List<string> inputOpURLs;
         /// <summary> OpId, replicaURL[] </summary>
         IDictionary<String, IList<IOperatorService>> outputOps;
 
@@ -27,6 +28,8 @@ namespace Operator {
 
 
         private StreamEngine engine = null;
+        List<StreamInputs.StreamInput> streamInputs = new List<StreamInputs.StreamInput>();
+        StreamOperator streamOp = null;
 
         BlockingCollection<Command> cmds;
         Thread cmdThread;
@@ -38,16 +41,14 @@ namespace Operator {
             outputOps = new Dictionary<string, IList<IOperatorService>>();
             cmds = new BlockingCollection<Command>(new ConcurrentQueue<Command>());
 
+            /* TODO parse routing */
             ThreadStart ts = new ThreadStart(this.processCommands);
             cmdThread = new Thread(ts);
             cmdThread.Start();
         }
 
         public void parseOperatorSpec(String opSpec, String[] opParams) {
-            Console.WriteLine("hello");
-            List<StreamInputs.StreamInput> inputs = new List<StreamInputs.StreamInput>();
-            inputs.Add(new StreamInputs.Stdin());
-            StreamOperator streamOp = null;
+            Console.WriteLine("parseOperatorSpec");
             switch (opSpec.ToUpper()) {
                 case "COUNT": {
                         streamOp = new Count();
@@ -76,13 +77,29 @@ namespace Operator {
                         break;
                     }
             }
-            engine = new StreamEngine(inputs, streamOp, new Routing.Stdout());
-            //FIXME just testing
-            //engine.start();
-            //Console.ReadLine();
-            ThreadStart ts = new ThreadStart(this.processCommands);
-            cmdThread = new Thread(ts);
-            cmdThread.Start();
+        }
+
+        public void parseInputOperatorsSpec(String[] inputOps)
+        {
+            inputOpURLs = new List<string>();
+            foreach (String input in inputOps) {
+
+                if (input.Equals("-"))
+                {
+                    streamInputs.Add(new StreamInputs.Stdin());
+                } else if(input.Contains("tcp://"))
+                {
+                    // assume it's an URL for an operator
+                    inputOpURLs.Add(input);
+                    //FIXME StreamInputs.Operator will need some way of receiving the input
+                    //FIXME TODO streamInputs.Add(new StreamInputs.Operator());
+                }
+                else
+                {
+                    // assume it's a file
+                    //FIXME TODO streamInputs.Add(new StreamInputs.File(input));
+                }
+            }
         }
 
         public void enqueue(Command c)
@@ -147,7 +164,7 @@ namespace Operator {
         /// make ourself an output of our input OPs
         /// </summary>
         /// <param name=inputOpsURLs>OPs which will send us tuples</param>
-        private void registerInputs(String[] inputOpsURLs) {
+        private void registerInputs(List<string> inputOpsURLs) {
             foreach (String url in inputOpsURLs) {
                 IOperatorService inputOp = getOperatorServiceByURL(url);
                 /* FIXME we should probably start a new thread here, since not all OPs will be up yet */
@@ -196,24 +213,25 @@ namespace Operator {
 
 
     class Program {
-        //args syntax: OpID opURL replicaIndex inputFiles inputOpURLs Routing OpSpec OpParams;
+        //args syntax: OpID opURL replicaIndex inputOps Routing OpSpec OpParams;
         static void Main(string[] args) {
             try {
                 String opID = args[0];
                 String opURL = args[1];
                 int replicaIndex = Int32.Parse(args[2]);
-                String[] inputFiles = args[3].Split(',');
-                String[] inputOpsURLs = args[4].Split(',');
-                String routing = args[5];
-                String opSpec = args[6];
-                String[] opParams = (args.Length > 7 ? args[7].Split(',') : null);
+                String[] inputOps = args[3].Split(',');
+                String routing = args[4];
+                String opSpec = args[5];
+                String[] opParams = (args.Length > 6 ? args[6].Split(',') : null);
 
 
                 Operator op = new Operator(opID, opURL, replicaIndex, routing);
+                /* \/ FIXME TODO move these to the construct 'a la' ES ? */
                 op.parseOperatorSpec(opSpec, opParams);
-                op.launchService();
-                //process.RequestInput(inputOpsURLs);
+                op.parseInputOperatorsSpec(inputOps);
                 op.connectToPuppetMaster();
+
+                op.launchService();
             }
             catch (Exception e) { Console.WriteLine(e); }
 
