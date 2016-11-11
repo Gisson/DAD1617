@@ -97,6 +97,7 @@ namespace Operator
                             tuple = op.processTuple(tuple);
                             if (tuple != null)
                             {
+                                /* TODO log the output tuple to the PM */
                                 route.outputTuple(tuple);
                             }else
                             {

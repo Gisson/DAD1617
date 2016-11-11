@@ -13,8 +13,8 @@ namespace CommonTypes.RemoteInterfaces {
         //registers as a subscriber: ask to input operator to provide tuples when possible
         void requestInput(String opID, String opURL, int replicaIndex);
 
-        //send tuple to downstream OP
         // perhaps there is a better name for this
+        /// <summary> send tuple to downstream OP </summary>
         void emitTuple(IList<string> tuple);
 
         /* *** commands by puppet master *** */
