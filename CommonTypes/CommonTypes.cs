@@ -17,32 +17,4 @@ namespace CommonTypes
         }
 
     }
-
-    public abstract class IRemoteOperator: MarshalByRefObject
-    {
-        /* *** commands *** */
-        public abstract void start();
-        public abstract void interval(int milliseconds);
-        public abstract void status();
-        public abstract void crash();
-        public abstract void freeze();
-        public abstract void unfreeze();
-        //note: the wait command is not remote
-
-
-        public abstract void receiveMessage(string message);// Might not be needed
-    }
-
-    public abstract class IRemotePuppetMaster : MarshalByRefObject
-    {
-        public abstract void registerClient(string name,string url,int port);
-        public abstract void receiveLog(string clientName, string logMessage);
-    }
-
-    public abstract class IRemoteProcessCreationService : MarshalByRefObject
-    {
-        public abstract void startOperator(/* TODO add args */);
-        public abstract void receiveMessage(string message);
-    }
-
 }

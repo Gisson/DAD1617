@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
-namespace PCS
-{
-    class PCS
-    {
-        static void Main(string[] args)
-        {
-        }
+namespace PCS {
+    interface IProcessCreationService {
+       // void createOperator() {
+
+
     }
 }
