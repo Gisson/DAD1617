@@ -65,5 +65,11 @@ namespace Operator
             OP.status();
            // throw new NotImplementedException();
         }
+
+        public void registerOutputOperator(string opId, string opURL, int replicaIndex)
+        {
+            OP.registerOutputOperator(opId, opURL, replicaIndex);
+            //throw new NotImplementedException();
+        }
     }
 }

@@ -10,8 +10,11 @@ namespace CommonTypes.RemoteInterfaces {
         //for logging when needed
         void connectToPuppetMaster(String puppetMasterURL);
 
-        //registers as a subscriber: ask to input operator to provide tuples when possible
-        void requestInput(String opID, String opURL, int replicaIndex);
+        /// <summary>
+        /// register operatorURL as an input for our output
+        /// </summary>
+        /// <param name="operatorURL">OP that will receive our tuples</param>
+        void registerOutputOperator(string opId, string opURL, int replicaIndex);
 
         // perhaps there is a better name for this
         /// <summary> send tuple to downstream OP </summary>

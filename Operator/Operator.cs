@@ -13,11 +13,11 @@ using System.Text.RegularExpressions;
 
 namespace Operator {
     class Operator : IOperator {
-        String OpID;
-        String OpURL;
-        int ReplicaIndex;
-        String[] tuples;
-        IDictionary<String, IOperatorService[]> OutputOpsURLs; //id|replicas
+        string myOpId;
+        string myOpURL;
+        int myReplicaIndex;
+        /// <summary> OpId, replicaURL[] </summary>
+        IDictionary<String, IList<IOperatorService>> outputOps;
 
         private IPuppetMasterService pms;
         private const String PMS_URL = "tcp://localhost:10000/pms";
@@ -30,10 +30,10 @@ namespace Operator {
                     typeof(IPuppetMasterService),
                     PMS_URL);
 
-            OpID = opID;
-            OpURL = opURL;
-            ReplicaIndex = replicaIndex;
-
+            myOpId = opID;
+            myOpURL = opURL;
+            myReplicaIndex = replicaIndex;
+            outputOps = new Dictionary<string, IList<IOperatorService>>();
             //routing
             //opspec
             //opparams
@@ -54,52 +54,74 @@ namespace Operator {
         public void start() {
             //start processing and emitting tuples
 
-            pms.writeIntoLog(OpID, "start");
+            pms.writeIntoLog(myOpId, "start");
             //throw new NotImplementedException();
         }
 
         public void interval(int milliseconds) {
             //sleep between consecutive events
-            pms.writeIntoLog(OpID, "interval");
+            pms.writeIntoLog(myOpId, "interval");
             //throw new NotImplementedException();
         }
 
         public void freeze() {
             //stops processing tuples
-            pms.writeIntoLog(OpID, "freeze");
+            pms.writeIntoLog(myOpId, "freeze");
             //throw new NotImplementedException();
         }
 
         public void unfreeze() {
-            pms.writeIntoLog(OpID, "unfreeze");
+            pms.writeIntoLog(myOpId, "unfreeze");
             //continues processing tuples
             //throw new NotImplementedException();
         }
 
         public void crash() {
-            pms.writeIntoLog(OpID, "crash");
+            pms.writeIntoLog(myOpId, "crash");
             //rip process, you will be missed
             //throw new NotImplementedException();
         }
 
         public void status() {
-            pms.writeIntoLog(OpID, "status");
+            pms.writeIntoLog(myOpId, "status");
             //throw new NotImplementedException();
         }
 
 
-        public void RequestInput(String[] inputOpsURLs) {
+        /// <summary>
+        /// make ourself an output of our input OPs
+        /// </summary>
+        /// <param name="inputOpsURLs">OPs which will send us tuples</param>
+        private void registerInputs(String[] inputOpsURLs) {
             foreach (String url in inputOpsURLs) {
-                IOperatorService inputOp = (IOperatorService)Activator.GetObject(
-                    typeof(IOperatorService),
-                    url);
-                inputOp.requestInput(OpID, OpURL, ReplicaIndex);
+                IOperatorService inputOp = getOperatorServiceByURL(url);
+                /* FIXME we should probably start a new thread here, since not all OPs will be up yet */
+                inputOp.registerOutputOperator(myOpId, myOpURL, myReplicaIndex);
             }
         }
 
+        public void registerOutputOperator(string opId, string opURL, int replicaIndex)
+        {
+            IOperatorService service = getOperatorServiceByURL(opURL);
+            lock (outputOps)
+            {
+                IList<IOperatorService> replicas;
+                if (!outputOps.TryGetValue(opId, out replicas))
+                {
+                    replicas = new List<IOperatorService>();
+                }
+                replicas.Add(service);
+            }
+        }
+
+        private IOperatorService getOperatorServiceByURL(string URL)
+        {
+            return (IOperatorService)Activator.GetObject(
+                    typeof(IOperatorService), URL);
+        }
 
         public void launchService() {
-            Match match = Regex.Match(OpURL, @"^tcp://[\w\.]+:(\d{4,5})/(\w+)$");
+            Match match = Regex.Match(myOpURL, @"^tcp://[\w\.]+:(\d{4,5})/(\w+)$");
             System.Console.WriteLine(match.Groups[1].Value);
             int port = Int32.Parse(match.Groups[1].Value);
             String serviceName = match.Groups[2].Value;
@@ -115,10 +137,6 @@ namespace Operator {
 
         }
 
-        public void registerOutputOperator(string operatorURL)
-        {
-            throw new NotImplementedException();
-        }
 
         public void receiveTuple(IList<string> tuple)
         {
