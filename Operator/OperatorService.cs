@@ -17,9 +17,13 @@ namespace Operator
     {
 
         private IOperator OP;
+        private ICommandableOperator cmdOP;
+        /* perhaps just one unified interface is needed :( 
+         * I wanted to prevent commands from running methods that are intended for the service only */
 
-        public OperatorService(IOperator op) {
+        public OperatorService(IOperator op, ICommandableOperator cmdOP) {
             OP = op;
+            this.cmdOP = cmdOP;
         }
 
         public void connectToPuppetMaster(String puppetMasterURL) { //for logging when needed

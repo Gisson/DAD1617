@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Operator.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,9 @@ namespace Operator {
         void registerOutputOperator(string opId, string opURL, int replicaIndex); //keeping track of "child" operators to send tuples
         void receiveTuple(IList<string> tuple); //receive tuple from input operator
 
+        /// <summary> enqueues a command to be run on the command processing thread of the Operator </summary>
+        /// <param name="c"></param>
+        void enqueue(Command c);
     }
     /// <summary>
     /// Operator methods that can be queued for execution by the Operator via Operator.Commands

@@ -15,7 +15,7 @@ using Operator.Commands;
 using System.Collections.Concurrent;
 
 namespace Operator {
-    public class Operator : IOperator {
+    public class Operator : IOperator, ICommandableOperator {
         string myOpId;
         string myOpURL;
         int myReplicaIndex;
@@ -31,9 +31,11 @@ namespace Operator {
         List<StreamInputs.StreamInput> streamInputs = new List<StreamInputs.StreamInput>();
         StreamOperator streamOp = null;
 
+        /// <summary> thread-safe queue of commads to be executed </summary>
         BlockingCollection<Command> cmds;
         Thread cmdThread;
 
+        /* FIXME: we should be consistent on how to pass parameters (parse method vs constuctor arg) */
         public Operator(String opID, String opURL, int replicaIndex, String routing) {
             myOpId = opID;
             myOpURL = opURL;
@@ -200,7 +202,7 @@ namespace Operator {
             TcpChannel channel = new TcpChannel(props, null, null);
             ChannelServices.RegisterChannel(channel, false);
             /* register our operator */
-            OperatorService op = new OperatorService(this);
+            OperatorService op = new OperatorService(this, this);
             RemotingServices.Marshal(op, serviceName, typeof(OperatorService));
         }
 
