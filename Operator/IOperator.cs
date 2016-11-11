@@ -10,7 +10,7 @@ namespace Operator {
     /// </summary>
     public interface IOperator {
         void registerOutputOperator(String operatorURL); //keeping track of "child" operators to send tuples
-        void receiveTuple(String tuple); //receive tuple from input operator
+        void receiveTuple(IList<string> tuple); //receive tuple from input operator
 
         /* *** command request by operatorService *** */
         void start();

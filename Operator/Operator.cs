@@ -12,7 +12,7 @@ using System.Collections;
 using System.Text.RegularExpressions;
 
 namespace Operator {
-    class Operator {
+    class Operator : IOperator {
         String OpID;
         String OpURL;
         int ReplicaIndex;
@@ -23,6 +23,7 @@ namespace Operator {
         private const String PMS_URL = "tcp://localhost:10000/pms";
 
 
+        private StreamEngine engine;
 
         public Operator(String opID, String opURL, int replicaIndex, String routing, String opSpec, String[] opParams) {
             pms = (IPuppetMasterService)Activator.GetObject(
@@ -36,6 +37,15 @@ namespace Operator {
             //routing
             //opspec
             //opparams
+
+            // FIXME just for testing
+            List<StreamInputs.StreamInput> inputs = new List<StreamInputs.StreamInput>();
+            inputs.Add(new StreamInputs.Stdin());
+            engine = new StreamEngine(inputs, new StreamOperators.Uniq(0), new Routing.Stdout());
+
+            //FIXME just testing
+            //engine.start();
+            //Console.ReadLine();
         }
 
 
@@ -103,6 +113,16 @@ namespace Operator {
             OperatorService op = new OperatorService(this);
             RemotingServices.Marshal(op, serviceName, typeof(OperatorService));
 
+        }
+
+        public void registerOutputOperator(string operatorURL)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void receiveTuple(IList<string> tuple)
+        {
+            throw new NotImplementedException();
         }
     }
 

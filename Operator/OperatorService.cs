@@ -16,20 +16,10 @@ namespace Operator
     class OperatorService : MarshalByRefObject, IOperatorService
     {
 
-        private StreamEngine engine;
-        private Operator OP;
+        private IOperator OP;
 
-        public OperatorService(Operator op) {
+        public OperatorService(IOperator op) {
             OP = op;
-            //had to comment or else he'd be stuck in the command line
-            // FIXME just for testing
-            List<StreamInputs.StreamInput> inputs = new List<StreamInputs.StreamInput>();
-            inputs.Add(new StreamInputs.Stdin());
-            engine = new StreamEngine(inputs, new StreamOperators.Uniq(0), new Routing.Stdout());
-
-            //FIXME just testing
-            //engine.start();
-            //Console.ReadLine();
         }
 
         public void connectToPuppetMaster(String puppetMasterURL) { //for logging when needed
@@ -41,7 +31,7 @@ namespace Operator
             throw new NotImplementedException();
         }
 
-        public void emitTuple(String operatorURL) { //request for child operator to receive tuples
+        public void emitTuple(IList<string> tuple) {
             throw new NotImplementedException();
         }
 
