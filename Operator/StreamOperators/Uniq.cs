@@ -9,26 +9,23 @@ namespace Operator.StreamOperators
     class Uniq : StreamOperator
     {
         List<string> seen;
-        private int field;
+        int FieldNumber;
 
-        public Uniq(int field)
+        public Uniq(int fieldNumber)
         {
-            this.field = field;
-            this.seen = new List<string>();
+            FieldNumber = fieldNumber;
+            seen = new List<string>();
         }
 
-        public IList<string> processTuple(IList<string> tuple)
-        {
-            string currentField = tuple[field];
-            if(seen.Contains(currentField))
-            {
-                /* FIXME null is probably not a good idea */
-                return null;
-            } else
+        public IList<IList<string>> processTuple(IList<string> inputTuple) {            
+            IList<IList<string>> outputTuples = new List<IList<string>>();
+            String currentField = inputTuple[FieldNumber];
+            if(!seen.Contains(currentField))
             {
                 seen.Add(currentField);
-                return tuple;
+                outputTuples.Add(inputTuple);
             }
+            return outputTuples; //never returns null
         }
     }
 }

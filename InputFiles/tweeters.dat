@@ -1,0 +1,14 @@
+%% This file contains the URLs sent by tweeters. 
+%% The format of each line is: id, tweeter id, url
+1, user3, "www.tecnico.ulisboa.pt"
+2, user7, "www.google.com"
+3, user8, "www.facebook.com"
+4, user4, "www.reddit.com"
+5, user9, "www.inesc-id.pt"
+6, user4, "www.tecnico.ulisboa.pt"
+7, user7, "www.facebook.com"
+8, user1, "www.inesc-id.pt"
+9, user6, "www.tecnico.ulisboa.pt"
+10, user3, "www.tecnico.ulisboa.pt"
+11, user2, "www.amazon.com"
+12, user5, "www.tecnico.ulisboa.pt"

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace CommonTypes
 {
-
     public class ConnectionArgs : MarshalByRefObject
     {
         public string url { get; set; }

@@ -172,7 +172,7 @@ namespace PuppetMaster {
             //get urls
             foreach (String inputOpID in InputOps) {
                 //is it a file?
-                if (File.Exists(PuppetMaster.getSourceDir() + inputOpID)) {
+                if (File.Exists(PuppetMaster.getInputDir() + inputOpID)) {
                     if (inputFiles != "") inputFiles += ",";
                     inputFiles += inputOpID;
                 }

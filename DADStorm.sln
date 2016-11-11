@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PCS", "PCS\PCS.csproj", "{2
 		{98034913-94C8-4545-94C3-83EC11514F9F} = {98034913-94C8-4545-94C3-83EC11514F9F}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMaster", "..\DAD1617-master\PuppetMaster\PuppetMaster.csproj", "{A44F5746-B513-4A46-9D63-FB161DC0606D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PuppetMaster", "..\DAD1617\PuppetMaster\PuppetMaster.csproj", "{A44F5746-B513-4A46-9D63-FB161DC0606D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

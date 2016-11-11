@@ -10,6 +10,7 @@ using System.Runtime.Remoting;
 using CommonTypes.RemoteInterfaces;
 using System.Collections;
 using System.Text.RegularExpressions;
+using Operator.StreamOperators;
 
 namespace Operator {
     class Operator : IOperator {
@@ -25,24 +26,47 @@ namespace Operator {
 
         private StreamEngine engine;
 
-        public Operator(String opID, String opURL, int replicaIndex, String routing, String opSpec, String[] opParams) {
-            pms = (IPuppetMasterService)Activator.GetObject(
-                    typeof(IPuppetMasterService),
-                    PMS_URL);
-
+        public Operator(String opID, String opURL, int replicaIndex, String routing) {
             myOpId = opID;
             myOpURL = opURL;
             myReplicaIndex = replicaIndex;
             outputOps = new Dictionary<string, IList<IOperatorService>>();
-            //routing
-            //opspec
-            //opparams
+        }
 
-            // FIXME just for testing
+        public void parseOperatorSpec(String opSpec, String[] opParams) {
+            Console.WriteLine("hello");
             List<StreamInputs.StreamInput> inputs = new List<StreamInputs.StreamInput>();
             inputs.Add(new StreamInputs.Stdin());
-            engine = new StreamEngine(inputs, new StreamOperators.Uniq(0), new Routing.Stdout());
-
+            StreamOperator streamOp = null;
+            switch (opSpec.ToUpper()) {
+                case "COUNT": {
+                        streamOp = new Count();
+                        break;
+                    }
+                case "CUSTOM": {
+                        streamOp = new Custom(
+                            opParams[0],
+                            opParams[1],
+                            opParams[2]);
+                        break;
+                    }
+                case "DUP": {
+                        streamOp = new Dup();
+                        break;
+                    }
+                case "FILTER": {
+                        streamOp = new Filter(
+                            Int32.Parse(opParams[0]),
+                            opParams[1],
+                            opParams[2]);
+                        break;
+                    }
+                case "UNIQ": {
+                        streamOp = new Uniq(Int32.Parse(opParams[0]));
+                        break;
+                    }
+            }
+            engine = new StreamEngine(inputs, streamOp, new Routing.Stdout());
             //FIXME just testing
             //engine.start();
             //Console.ReadLine();
@@ -88,10 +112,14 @@ namespace Operator {
         }
 
 
+
+        public void receiveTuple(IList<string> tuple) {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// make ourself an output of our input OPs
         /// </summary>
-        /// <param name="inputOpsURLs">OPs which will send us tuples</param>
+        /// <param name=inputOpsURLs>OPs which will send us tuples</param>
         private void registerInputs(String[] inputOpsURLs) {
             foreach (String url in inputOpsURLs) {
                 IOperatorService inputOp = getOperatorServiceByURL(url);
@@ -100,22 +128,18 @@ namespace Operator {
             }
         }
 
-        public void registerOutputOperator(string opId, string opURL, int replicaIndex)
-        {
+        public void registerOutputOperator(string opId, string opURL, int replicaIndex) {
             IOperatorService service = getOperatorServiceByURL(opURL);
-            lock (outputOps)
-            {
+            lock (outputOps) {
                 IList<IOperatorService> replicas;
-                if (!outputOps.TryGetValue(opId, out replicas))
-                {
+                if (!outputOps.TryGetValue(opId, out replicas)) {
                     replicas = new List<IOperatorService>();
                 }
                 replicas.Add(service);
             }
         }
 
-        private IOperatorService getOperatorServiceByURL(string URL)
-        {
+        private IOperatorService getOperatorServiceByURL(string URL) {
             return (IOperatorService)Activator.GetObject(
                     typeof(IOperatorService), URL);
         }
@@ -134,68 +158,37 @@ namespace Operator {
             /* register our operator */
             OperatorService op = new OperatorService(this);
             RemotingServices.Marshal(op, serviceName, typeof(OperatorService));
-
         }
 
-
-        public void receiveTuple(IList<string> tuple)
-        {
-            throw new NotImplementedException();
+        public void connectToPuppetMaster() {
+            pms = (IPuppetMasterService)Activator.GetObject(
+        typeof(IPuppetMasterService),
+        PMS_URL);
         }
     }
 
 
     class Program {
-        static int port;
-
-        static void printUsage() {
-            // the PCS will tell us which port to listen on
-            String usage = "Usage: Operator.exe PORT" + Environment.NewLine
-                         + Environment.NewLine
-                         + "       PORT: port to listen on";
-            System.Console.WriteLine(usage);
-        }
-
-        static bool parseArgs(string[] args) {
-            if (args.Length >= 1) {
-                /* parse the Operator port number */
-                string portArg = args[0];
-                if (!Int32.TryParse(portArg, out port) || port < 10002 || port > 65535) {
-                    System.Console.WriteLine("Invalid port '" + portArg + "'. Enter a port in the range 10002-65535.");
-                    return false;
-                }
-            }
-            else {
-                return false;
-            }
-            return true;
-        }
-
         //args syntax: OpID opURL replicaIndex inputFiles inputOpURLs Routing OpSpec OpParams;
         static void Main(string[] args) {
-            /*   if (!parseArgs(args)) {
-                   printUsage();
-                   return;
-               }*/
-            System.Console.WriteLine(String.Join(" ", args));
-            //PERFECTLY TESTED: READY TO USE
-            String opID = args[0];
-            String opURL = args[1];
-            int replicaIndex = Int32.Parse(args[2]);
-            String[] inputFiles = args[3].Split(',');
-            String[] inputOpsURLs = args[4].Split(',');
-            String routing = args[5];
-            String opSpec = args[6];
-            String[] opParams = (args.Length > 7 ? args[7].Split(',') : null);
+            try {
+                String opID = args[0];
+                String opURL = args[1];
+                int replicaIndex = Int32.Parse(args[2]);
+                String[] inputFiles = args[3].Split(',');
+                String[] inputOpsURLs = args[4].Split(',');
+                String routing = args[5];
+                String opSpec = args[6];
+                String[] opParams = (args.Length > 7 ? args[7].Split(',') : null);
 
 
-            Operator process = new Operator(opID, opURL, replicaIndex, routing, opSpec, opParams);
-            process.launchService();
-            //process.RequestInput(inputOpsURLs);
-            //process.ConnectToPuppetMaster();
-
-            //System.Console.WriteLine("Press <enter> to terminate Operator...");
-            //System.Console.ReadLine(); /* can't use StreamInputs.Stdin with this line here */
+                Operator op = new Operator(opID, opURL, replicaIndex, routing);
+                op.parseOperatorSpec(opSpec, opParams);
+                op.launchService();
+                //process.RequestInput(inputOpsURLs);
+                op.connectToPuppetMaster();
+            }
+            catch (Exception e) { Console.WriteLine(e); }
 
             Console.ReadLine();
         }

@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 namespace CommonTypes.RemoteInterfaces {
     /*Methods provided to the exterior classes to communicate with OperatorService*/
     public interface IOperatorService {
-        //for logging when needed
-        void connectToPuppetMaster(String puppetMasterURL);
 
         /// <summary>
         /// register operatorURL as an input for our output

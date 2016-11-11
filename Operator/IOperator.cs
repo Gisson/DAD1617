@@ -24,6 +24,8 @@ namespace Operator {
         void crash();
         void status();
 
+        void connectToPuppetMaster();
+
 
     }
 }

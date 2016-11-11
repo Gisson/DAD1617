@@ -47,12 +47,12 @@ namespace PuppetMaster {
         private void browseButton_Click(object sender, EventArgs e) {
             /*display dialog to choose file*/
             OpenFileDialog fDialog = new OpenFileDialog();
-            openFileDialog1.Title = "Open Configuration File";
-            openFileDialog1.Filter = "Config Files|*.config|All Files|*.*";
-            openFileDialog1.InitialDirectory = PuppetMaster.getSourceDir();
-            openFileDialog1.ShowDialog();
+            dadstorm.Title = "Open Configuration File";
+            dadstorm.Filter = "Config Files|*.config|All Files|*.*";
+            dadstorm.InitialDirectory = PuppetMaster.getInputDir();
+            dadstorm.ShowDialog();
             //store selected filename
-            String configFilename = openFileDialog1.FileName;
+            String configFilename = dadstorm.FileName;
             if (File.Exists(configFilename)) {
                 pathTextBox.Text = configFilename;
                 //clean current preview text box

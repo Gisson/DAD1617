@@ -1,0 +1,15 @@
+%% This file contains tweeters and their followers.
+%% The format of each line is: User id, follower 1, follower 2, follower3...
+user2, user10
+user3, user1, user11, user12
+user1, user11, user12, user2, user8
+user5, user14, user2
+user4, user10, user11
+user9, user5, user2
+user8, user6
+user6, user2
+user7, user3, user11, user10, user1, user2, user6
+user10, user5
+user5, user6, user2
+user13, user8, user10
+user11, user6, user5, user10

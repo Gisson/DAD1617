@@ -8,19 +8,15 @@ using Operator.StreamInputs;
 using Operator.StreamOperators;
 using Operator.Routing;
 
-namespace Operator
-{
-    /// <summary>
-    /// Ihis is the "core" class of the project
-    /// It gets tuples from StreamInputs, processes them using a StreamOperator
-    /// and outputs them using a RoutingPolicy.
-    /// </summary>
-    class StreamEngine
-    {
+namespace Operator {
+
+
+    class StreamEngine {
         private IList<StreamInput> inputs;
         private StreamOperator op;
         private RoutingPolicy route;
 
+        //status attributes
         private bool freezed = false;
         private bool started = false;
 
@@ -29,47 +25,37 @@ namespace Operator
 
         private Thread processingThread;
 
-        public StreamEngine(IList<StreamInput> i, StreamOperator o, RoutingPolicy r)
-        {
+        public StreamEngine(IList<StreamInput> i, StreamOperator o, RoutingPolicy r) {
             inputs = i;
             op = o;
             route = r;
         }
 
-        public int Interval
-        {
-            get
-            {
+        public int Interval {
+            get {
                 int i;
-                lock(intervalLock)
-                {
+                lock (intervalLock) {
                     i = interval;
                 }
                 return i;
             }
-            set
-            {
-                lock (intervalLock)
-                {
+            set {
+                lock (intervalLock) {
                     interval = value;
                 }
             }
         }
 
-        public void freeze()
-        {
+        public void freeze() {
             freezed = true;
         }
 
-        public void unfreeze()
-        {
+        public void unfreeze() {
             freezed = false;
         }
-         
-        public void start()
-        {
-            if(!started)
-            {
+
+        public void start() {
+            if (!started) {
                 Console.WriteLine("StreamEngine starting...");
                 started = true;
                 ThreadStart ts = new ThreadStart(this.process);
@@ -78,35 +64,22 @@ namespace Operator
                 // TODO: check if the thread was actually created
             }
         }
-        
+
         /// <summary>
         /// thread that processes tuples
         /// </summary>
-        private void process()
-        {
-            while (started)
-            {
-                if (!freezed)
-                {
+        private void process() {
+            while (started) {
+                if (!freezed) {
                     // round-robin a tuple from each input
-                    foreach (StreamInput i in inputs)
-                    {
-                        IList<string> tuple = i.getTuple();
-                        if (tuple != null)
-                        {
-                            tuple = op.processTuple(tuple);
-                            if (tuple != null)
-                            {
-                                /* TODO log the output tuple to the PM */
-                                route.outputTuple(tuple);
-                            }else
-                            {
-                            }
-                            Thread.Sleep(Interval);
-                        }
+                    foreach (StreamInput i in inputs) {
+                        foreach (IList<string> tuple in op.processTuple(i.getTuple()))
+                            /* TODO log the output tuple to the PM */
+                            route.outputTuple(tuple);
+                        Thread.Sleep(Interval);
                     }
-                }else
-                {
+                }
+                else {
                     Thread.Sleep(Interval);
                 }
             }

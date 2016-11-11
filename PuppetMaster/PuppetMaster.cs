@@ -144,7 +144,7 @@ namespace PuppetMaster {
         }*/
 
         /*go to source directory*/
-        public static string getSourceDir() {
+        public static string getInputDir() {
             string dir = Directory.GetCurrentDirectory();
             DirectoryInfo dirInfo = null;
             //go 3 directories up
@@ -152,7 +152,7 @@ namespace PuppetMaster {
                 dirInfo = Directory.GetParent(dir);
                 dir = dirInfo.FullName;
             }
-            return dir + "\\";
+            return dirInfo.GetDirectories("InputFiles").First().FullName + "\\";
         }
 
 

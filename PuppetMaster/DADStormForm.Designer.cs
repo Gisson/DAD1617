@@ -30,7 +30,7 @@
             this.browseButton = new System.Windows.Forms.Button();
             this.stepButton = new System.Windows.Forms.Button();
             this.runButton = new System.Windows.Forms.Button();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.dadstorm = new System.Windows.Forms.OpenFileDialog();
             this.shapeContainer1 = new Microsoft.VisualBasic.PowerPacks.ShapeContainer();
             this.stepPoint = new Microsoft.VisualBasic.PowerPacks.OvalShape();
             this.SuspendLayout();
@@ -135,9 +135,9 @@
             this.runButton.UseVisualStyleBackColor = false;
             this.runButton.Click += new System.EventHandler(this.runButton_Click);
             // 
-            // openFileDialog1
+            // dadstorm
             // 
-            this.openFileDialog1.FileName = "openFileDialog1";
+            this.dadstorm.FileName = "dadstorm";
             // 
             // shapeContainer1
             // 
@@ -192,7 +192,7 @@
         private System.Windows.Forms.Button browseButton;
         private System.Windows.Forms.Button stepButton;
         private System.Windows.Forms.Button runButton;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.OpenFileDialog dadstorm;
         private Microsoft.VisualBasic.PowerPacks.ShapeContainer shapeContainer1;
         private Microsoft.VisualBasic.PowerPacks.OvalShape stepPoint;
     }

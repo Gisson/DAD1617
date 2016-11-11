@@ -1,0 +1,7 @@
+C:\Documents and Settings\Administrator\My Documents\Downloads\OperatorTransfer1\OperatorTransfer\LibOperator\bin\Debug\LibOperator.dll
+C:\Documents and Settings\Administrator\My Documents\Downloads\OperatorTransfer1\OperatorTransfer\LibOperator\bin\Debug\LibOperator.pdb
+C:\Documents and Settings\Administrator\My Documents\Downloads\OperatorTransfer1\OperatorTransfer\LibOperator\bin\Debug\LibDADStorm.dll
+C:\Documents and Settings\Administrator\My Documents\Downloads\OperatorTransfer1\OperatorTransfer\LibOperator\bin\Debug\LibDADStorm.pdb
+C:\Documents and Settings\Administrator\My Documents\Downloads\OperatorTransfer1\OperatorTransfer\LibOperator\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Administrator\My Documents\Downloads\OperatorTransfer1\OperatorTransfer\LibOperator\obj\Debug\LibOperator.dll
+C:\Documents and Settings\Administrator\My Documents\Downloads\OperatorTransfer1\OperatorTransfer\LibOperator\obj\Debug\LibOperator.pdb
