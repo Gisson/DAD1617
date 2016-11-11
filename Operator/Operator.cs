@@ -113,6 +113,7 @@ namespace Operator {
         /// <summary> thread that processes queued commands </summary>
         private void processCommands()
         {
+            Console.WriteLine("Command Thread starting...");
             while (!cmds.IsCompleted)
             {
                 Command c = cmds.Take();
@@ -129,7 +130,14 @@ namespace Operator {
             //start processing and emitting tuples
             pms.writeIntoLog(myOpId, "start");
             /* FIXME routing is wrong */
-            engine = new StreamEngine(streamInputs, streamOp, new Routing.Stdout());
+            Routing.RoutingPolicy r;
+            if(myOpId.StartsWith("-")) {
+                // just a little hack for testing
+                r = new Routing.Stdout();
+            } else{
+                r = new Routing.Primary(outputOps);
+            }
+            engine = new StreamEngine(streamInputs, streamOp, r);
             engine.start();
             //throw new NotImplementedException();
         }
@@ -212,10 +220,23 @@ namespace Operator {
             RemotingServices.Marshal(op, serviceName, typeof(OperatorService));
         }
 
-        public void connectToPuppetMaster() {
-            pms = (IPuppetMasterService)Activator.GetObject(
-        typeof(IPuppetMasterService),
-        PMS_URL);
+        private class PuppetMasterMock : IPuppetMasterService {
+            public void writeIntoLog(string opID, string logMessage)
+            {
+                Console.WriteLine("PMMOCK: " + opID + " " + logMessage);
+            }
+        }
+
+        public void connectToPuppetMaster()
+        {
+            if (myOpId.EndsWith("_")) {
+                // just a little hack for testing
+                pms = new PuppetMasterMock();
+            } else {
+                pms = (IPuppetMasterService)Activator.GetObject(
+                    typeof(IPuppetMasterService),
+                    PMS_URL);
+            }
         }
     }
 
@@ -223,6 +244,12 @@ namespace Operator {
     class Program {
         //args syntax: OpID opURL replicaIndex inputOps Routing OpSpec OpParams;
         static void Main(string[] args) {
+            Console.Write("args: ");
+            foreach( string a in args)
+            {
+                Console.Write(a + " ");
+            }
+            Console.WriteLine();
             try {
                 String opID = args[0];
                 String opURL = args[1];
@@ -240,10 +267,12 @@ namespace Operator {
                 op.connectToPuppetMaster();
 
                 op.launchService();
+                // FIXME testing
+                op.start();
             }
             catch (Exception e) { Console.WriteLine(e); }
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }
     }
 }

@@ -10,10 +10,10 @@ namespace Operator.Routing
 {
     class Primary : RoutingPolicy
     {
-        IDictionary<string, IOperatorService[]> ops;
+        IDictionary<string, IList<IOperatorService>> ops;
         /* FIXME maybe ops can be in the superclass */
 
-        public Primary(IDictionary<string, IOperatorService[]> ops)
+        public Primary(IDictionary<string, IList<IOperatorService>> ops)
         {
             this.ops = ops;
         }
