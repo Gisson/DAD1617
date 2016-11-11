@@ -11,9 +11,11 @@ using CommonTypes.RemoteInterfaces;
 using System.Collections;
 using System.Text.RegularExpressions;
 using Operator.StreamOperators;
+using Operator.Commands;
+using System.Collections.Concurrent;
 
 namespace Operator {
-    class Operator : IOperator {
+    public class Operator : IOperator {
         string myOpId;
         string myOpURL;
         int myReplicaIndex;
@@ -24,13 +26,21 @@ namespace Operator {
         private const String PMS_URL = "tcp://localhost:10000/pms";
 
 
-        private StreamEngine engine;
+        private StreamEngine engine = null;
+
+        BlockingCollection<Command> cmds;
+        Thread cmdThread;
 
         public Operator(String opID, String opURL, int replicaIndex, String routing) {
             myOpId = opID;
             myOpURL = opURL;
             myReplicaIndex = replicaIndex;
             outputOps = new Dictionary<string, IList<IOperatorService>>();
+            cmds = new BlockingCollection<Command>(new ConcurrentQueue<Command>());
+
+            ThreadStart ts = new ThreadStart(this.processCommands);
+            cmdThread = new Thread(ts);
+            cmdThread.Start();
         }
 
         public void parseOperatorSpec(String opSpec, String[] opParams) {
@@ -70,9 +80,26 @@ namespace Operator {
             //FIXME just testing
             //engine.start();
             //Console.ReadLine();
+            ThreadStart ts = new ThreadStart(this.processCommands);
+            cmdThread = new Thread(ts);
+            cmdThread.Start();
         }
 
+        public void enqueue(Command c)
+        {
+            cmds.Add(c);
+        }
 
+        /// <summary> thread that processes queued commands </summary>
+        private void processCommands()
+        {
+            while (!cmds.IsCompleted)
+            {
+                Command c = cmds.Take();
+                /* TODO this is a good place to log executed commands synchronously */
+                c.execute();
+            }
+        }
 
         /* *** commands *** */
         public void start() {

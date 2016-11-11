@@ -37,33 +37,27 @@ namespace Operator
 
         /* *** commands by puppet master *** */
         public void forceStart() {
-            OP.start();
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void forceInterval(int milliseconds) {
-            OP.interval(milliseconds);
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void forceFreeze() {
-            OP.freeze();
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void forceUnfreeze() {
-            OP.unfreeze();
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void forceCrash() {
-            OP.crash();
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void getStatus() {
-            OP.status();
-           // throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void registerOutputOperator(string opId, string opURL, int replicaIndex)

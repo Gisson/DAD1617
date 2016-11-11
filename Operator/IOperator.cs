@@ -16,7 +16,12 @@ namespace Operator {
         void registerOutputOperator(string opId, string opURL, int replicaIndex); //keeping track of "child" operators to send tuples
         void receiveTuple(IList<string> tuple); //receive tuple from input operator
 
-        /* *** command request by operatorService *** */
+    }
+    /// <summary>
+    /// Operator methods that can be queued for execution by the Operator via Operator.Commands
+    /// </summary>
+    public interface ICommandableOperator
+    {
         void start();
         void interval(int milliseconds);
         void freeze();
