@@ -73,10 +73,14 @@ namespace Operator {
                 if (!freezed) {
                     // round-robin a tuple from each input
                     foreach (StreamInput i in inputs) {
-                        foreach (IList<string> tuple in op.processTuple(i.getTuple()))
-                            /* TODO log the output tuple to the PM */
-                            route.outputTuple(tuple);
-                        Thread.Sleep(Interval);
+                        IList<string> inTuple = i.getTuple();
+                        if(inTuple != null)
+                        {
+                            foreach (IList<string> tuple in op.processTuple(inTuple))
+                                /* TODO log the output tuple to the PM */
+                                route.outputTuple(tuple);
+                            Thread.Sleep(Interval);
+                        }
                     }
                 }
                 else {

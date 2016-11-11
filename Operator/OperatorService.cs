@@ -26,17 +26,20 @@ namespace Operator
             this.cmdOP = cmdOP;
         }
 
+        /* FIXME does this need to be here? */
         public void connectToPuppetMaster(String puppetMasterURL) { //for logging when needed
             throw new NotImplementedException();
         }
 
         //registers as a subscriber: ask to input operator to provide tuples when possible
-        public void requestInput(String opID, String opURL, int replicaIndex) { 
-            throw new NotImplementedException();
+        public void requestInput(String opID, String opURL, int replicaIndex) {
+            OP.registerOutputOperator(opID, opURL, replicaIndex);
+            //throw new NotImplementedException();
         }
 
         public void emitTuple(IList<string> tuple) {
-            throw new NotImplementedException();
+            OP.receiveTuple(tuple);
+            //throw new NotImplementedException();
         }
 
         /* *** commands by puppet master *** */

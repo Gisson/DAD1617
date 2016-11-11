@@ -31,6 +31,9 @@ namespace Operator {
         List<StreamInputs.StreamInput> streamInputs = new List<StreamInputs.StreamInput>();
         StreamOperator streamOp = null;
 
+        /* FIXME do this better */
+        StreamInputs.Operator inputStreamOp = new StreamInputs.Operator();
+
         /// <summary> thread-safe queue of commads to be executed </summary>
         BlockingCollection<Command> cmds;
         Thread cmdThread;
@@ -94,8 +97,11 @@ namespace Operator {
                 {
                     // assume it's an URL for an operator
                     inputOpURLs.Add(input);
-                    //FIXME StreamInputs.Operator will need some way of receiving the input
-                    //FIXME TODO streamInputs.Add(new StreamInputs.Operator());
+                    // FIXME: assuming input from all OPs goes to the same InputStream
+                    if (!streamInputs.Contains(inputStreamOp))
+                    {
+                        streamInputs.Add(inputStreamOp);
+                    }
                 }
                 else
                 {
@@ -174,7 +180,9 @@ namespace Operator {
 
 
         public void receiveTuple(IList<string> tuple) {
-            throw new NotImplementedException();
+            /* FIXME add a parameter for the opid? */
+            inputStreamOp.putTuple(tuple);
+            //throw new NotImplementedException();
         }
         /// <summary>
         /// make ourself an output of our input OPs
@@ -184,11 +192,14 @@ namespace Operator {
             foreach (String url in inputOpsURLs) {
                 IOperatorService inputOp = getOperatorServiceByURL(url);
                 /* FIXME we should probably start a new thread here, since not all OPs will be up yet */
+                Console.WriteLine("Subscribing to " + url);
                 inputOp.registerOutputOperator(myOpId, myOpURL, myReplicaIndex);
             }
         }
 
-        public void registerOutputOperator(string opId, string opURL, int replicaIndex) {
+        public void registerOutputOperator(string opId, string opURL, int replicaIndex)
+        {
+            Console.WriteLine(opId + " subscribed to " + myOpId);
             IOperatorService service = getOperatorServiceByURL(opURL);
             lock (outputOps) {
                 IList<IOperatorService> replicas;
