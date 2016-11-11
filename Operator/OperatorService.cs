@@ -41,7 +41,7 @@ namespace Operator
 
         /* *** commands by puppet master *** */
         public void forceStart() {
-            throw new NotImplementedException();
+            OP.enqueue(new Commands.Start(cmdOP));
         }
 
         public void forceInterval(int milliseconds) {

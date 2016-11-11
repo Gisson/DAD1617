@@ -44,6 +44,7 @@ namespace Operator {
             cmds = new BlockingCollection<Command>(new ConcurrentQueue<Command>());
 
             /* TODO parse routing */
+
             ThreadStart ts = new ThreadStart(this.processCommands);
             cmdThread = new Thread(ts);
             cmdThread.Start();
@@ -122,9 +123,14 @@ namespace Operator {
 
         /* *** commands *** */
         public void start() {
+            // register ourselves as ouputs
+            // FIXME this is not the best place to to this, but it's a way to make sure the OPs are all running
+            registerInputs(inputOpURLs);
             //start processing and emitting tuples
-
             pms.writeIntoLog(myOpId, "start");
+            /* FIXME routing is wrong */
+            engine = new StreamEngine(streamInputs, streamOp, new Routing.Stdout());
+            engine.start();
             //throw new NotImplementedException();
         }
 
