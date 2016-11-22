@@ -20,10 +20,10 @@ namespace Operator.Routing
 
         public void outputTuple(IList<string> tuple)
         {
-            foreach(IOperatorService[] replicas in ops.Values)
+            foreach (IList<IOperatorService> replicas in ops.Values)
             {
                 // PRIMARY: send to the first replica
-                replicas[0].emitTuple(tuple);
+                replicas.ElementAt(0).emitTuple(tuple);
             }
         }
     }

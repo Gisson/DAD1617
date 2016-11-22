@@ -77,8 +77,10 @@ namespace Operator {
                         if(inTuple != null)
                         {
                             foreach (IList<string> tuple in op.processTuple(inTuple))
+                            {
                                 /* TODO log the output tuple to the PM */
                                 route.outputTuple(tuple);
+                            }
                             Thread.Sleep(Interval);
                         }
                     }

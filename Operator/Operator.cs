@@ -205,6 +205,7 @@ namespace Operator {
                 IList<IOperatorService> replicas;
                 if (!outputOps.TryGetValue(opId, out replicas)) {
                     replicas = new List<IOperatorService>();
+                    outputOps.Add(opId, replicas);
                 }
                 replicas.Add(service);
             }
