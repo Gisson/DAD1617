@@ -57,10 +57,16 @@ namespace Operator {
             Console.WriteLine("parseOperatorSpec");
             switch (opSpec.ToUpper()) {
                 case "COUNT": {
+                        if(opParams.Length != 0) {
+                            throw new Exception("COUNT needs 0 argument");
+                        }
                         streamOp = new Count();
                         break;
                     }
                 case "CUSTOM": {
+                        if(opParams.Length != 3) {
+                            throw new Exception("CUSTOM needs 3 argument");
+                        }
                         streamOp = new Custom(
                             opParams[0],
                             opParams[1],
@@ -68,10 +74,16 @@ namespace Operator {
                         break;
                     }
                 case "DUP": {
+                        if(opParams.Length != 0) {
+                            throw new Exception("DUP needs 0 argument");
+                        }
                         streamOp = new Dup();
                         break;
                     }
                 case "FILTER": {
+                        if(opParams.Length != 3) {
+                            throw new Exception("FILTER needs 3 arguments");
+                        }
                         streamOp = new Filter(
                             Int32.Parse(opParams[0]),
                             opParams[1],
@@ -79,7 +91,14 @@ namespace Operator {
                         break;
                     }
                 case "UNIQ": {
+                        if(opParams.Length != 1) {
+                            throw new Exception("UNIQ needs 1 argument");
+                        }
                         streamOp = new Uniq(Int32.Parse(opParams[0]));
+                        break;
+                    }
+                default: {
+                        Console.WriteLine("unknown operator spec" + opSpec);
                         break;
                     }
             }
@@ -256,10 +275,10 @@ namespace Operator {
     class Program {
         //args syntax: OpID opURL replicaIndex inputOps Routing OpSpec OpParams;
         static void Main(string[] args) {
-            Console.Write("args: ");
-            foreach( string a in args)
+            Console.WriteLine("args: ");
+            for (int i = 0; i < args.Length; i++)
             {
-                Console.Write(a + " ");
+                Console.WriteLine( i + ": " + args[i]);
             }
             Console.WriteLine();
             try {
