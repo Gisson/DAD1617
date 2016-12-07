@@ -7,11 +7,18 @@ using System.Threading.Tasks;
 namespace Operator.StreamOperators {
 
     class Filter : StreamOperator {
+        String[] validConditions = { ">", "=", "<" };
         int FieldNumber;
         String Condition;
-        String Value;
+        int Value;
 
-        public Filter(int fieldNumber, String condition, String value) {
+        public Filter(int fieldNumber, String condition, int value)
+        {
+            if(!validConditions.Contains(condition))
+            {
+                throw new ArgumentException("invalid Filter condition:" + condition);
+            }
+            Console.WriteLine("Filter field " + fieldNumber + condition + value);
             FieldNumber = fieldNumber;
             Condition = condition;
             Value = value;
@@ -20,9 +27,11 @@ namespace Operator.StreamOperators {
         public IList<IList<string>> processTuple(IList<string> inputTuple) {
             IList<IList<string>> outputTuples = new List<IList<string>>();
             String field = inputTuple.ElementAt(FieldNumber);
-            if ((Condition == ">" && field.Length > Value.Length) ||
-                (Condition == "<" && field.Length < Value.Length) ||
-                (Condition == "=" && field.Equals(Value))) {
+            int fieldInt = int.Parse(field);
+            // XXX: this could be optimized for performance (e.g. use compare int vs string) but who cares?
+            if ((Condition == ">" && fieldInt > Value) ||
+                (Condition == "<" && fieldInt < Value) ||
+                (Condition == "=" && fieldInt == Value)) {
                 outputTuples.Add(inputTuple);
             }
 
