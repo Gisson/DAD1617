@@ -87,7 +87,7 @@ namespace Operator {
                         streamOp = new Filter(
                             Int32.Parse(opParams[0]),
                             opParams[1],
-                            int.Parse(opParams[2]));
+                            opParams[2]);
                         break;
                     }
                 case "UNIQ": {
