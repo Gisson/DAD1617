@@ -7,5 +7,6 @@ using System.Threading.Tasks;
 namespace CommonTypes.RemoteInterfaces {
     public interface IProcessCreationService {
         void createOperator(String args);
+        void ping();
     }
 }

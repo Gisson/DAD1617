@@ -21,5 +21,9 @@ namespace PCS {
             process.StartInfo = startInfo;
             process.Start();
         }
+        public void ping()
+        {
+            // do nothing
+        }
     }
 }

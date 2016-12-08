@@ -72,5 +72,9 @@ namespace Operator
             OP.registerOutputOperator(opId, opURL, replicaIndex);
             //throw new NotImplementedException();
         }
+        public void ping()
+        {
+            // do nothing
+        }
     }
 }

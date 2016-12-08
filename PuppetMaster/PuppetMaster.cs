@@ -50,7 +50,9 @@ namespace PuppetMaster {
         [STAThread]
         public static void Main() {
             // createUI();
-            new Thread(() => init()).Start();
+            Thread t = new Thread(() => init());
+            t.IsBackground = true; // close thread if application exits
+            t.Start();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new DADStormForm());
@@ -65,12 +67,23 @@ namespace PuppetMaster {
                 typeof(PuppetMasterService),
                 SERVICE_NAME,
                 WellKnownObjectMode.Singleton);
-            //wait until PCS is live
-            while (PCS == null) {
-                //connect to PCS
-                PCS = (IProcessCreationService)Activator.GetObject(
-                    typeof(IProcessCreationService),
-                    PCS_URL);
+            //connect to PCS// NEVER returns null
+            PCS = (IProcessCreationService)Activator.GetObject(
+                typeof(IProcessCreationService),
+                PCS_URL);
+            bool connected = false;
+            while(!connected)
+            {
+                try
+                {
+                    PCS.ping(); // throws System.Net.Sockets.Exception if not connected
+                    connected = true;
+                    Console.WriteLine("connected");
+                }
+                catch (System.Net.Sockets.SocketException e)
+                {
+                    Thread.Sleep(10);
+                }
             }
 
             Console.ReadLine();
@@ -103,11 +116,24 @@ namespace PuppetMaster {
         //create a new operator and replicas
         public static void addOperator(String opID, int repFact, String[] addresses, String configArgs) {
             Replicas opReplicas = new Dictionary<String, IOperatorService>();
-            for (int i = 0; i < repFact; i++) {
-                String opURL = addresses[i]+i+opID; //small hack to avoid already registered service names
+            for (int i = 0; i < repFact; i++)
+            {
+                String opURL = addresses[i] + i + opID; //small hack to avoid already registered service names
                 String args = opID + " " + opURL + " " + i + " " + configArgs;
-                PCS.createOperator(args);
-                Thread.Sleep(1000); //give it some time to create the process
+
+                bool pcsOK = false;
+                while (!pcsOK) { 
+                    try
+                    {
+                        PCS.createOperator(args);
+                        pcsOK = true;
+                    }
+                    catch (System.Net.Sockets.SocketException e)
+                    {
+                        Console.WriteLine("Waiting for PCS");
+                        Thread.Sleep(100);
+                    }
+                }
                 IOperatorService op = (IOperatorService)Activator.GetObject(typeof(IOperatorService), opURL);
                 opReplicas.Add(new KeyValuePair<String, IOperatorService>(opURL, op));
             }

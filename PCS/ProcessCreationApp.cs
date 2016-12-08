@@ -20,7 +20,8 @@ namespace PCS {
                 typeof(ProcessCreationService),
                 SERVICE_NAME,
                 WellKnownObjectMode.Singleton);
-            
+
+            Console.WriteLine("press any key to exit");
             System.Console.ReadLine();
         }
     }

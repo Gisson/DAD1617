@@ -36,6 +36,10 @@ namespace PuppetMaster {
             PuppetMaster.receiveLog(opID, logMessage);
         }
 
-
+        void IPuppetMasterService.ping()
+        {
+            // do nothing
+            throw new NotImplementedException();
+        }
     }
 }

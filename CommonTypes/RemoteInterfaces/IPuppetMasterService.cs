@@ -7,5 +7,6 @@ using System.Threading.Tasks;
 namespace CommonTypes.RemoteInterfaces {
     public interface IPuppetMasterService {
         void writeIntoLog(string opID, string logMessage);
+        void ping();
     }
 }

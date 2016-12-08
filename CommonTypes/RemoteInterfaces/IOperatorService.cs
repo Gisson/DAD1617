@@ -8,6 +8,8 @@ namespace CommonTypes.RemoteInterfaces {
     /*Methods provided to the exterior classes to communicate with OperatorService*/
     public interface IOperatorService {
 
+        void ping();
+
         /// <summary>
         /// register operatorURL as an input for our output
         /// </summary>

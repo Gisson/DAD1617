@@ -252,6 +252,11 @@ namespace Operator {
         }
 
         private class PuppetMasterMock : IPuppetMasterService {
+            public void ping()
+            {
+                // do nothing
+            }
+
             public void writeIntoLog(string opID, string logMessage)
             {
                 Console.WriteLine("PMMOCK: " + opID + " " + logMessage);
