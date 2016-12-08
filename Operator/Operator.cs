@@ -54,7 +54,7 @@ namespace Operator {
         }
 
         public void parseOperatorSpec(String opSpec, String[] opParams) {
-            Console.WriteLine("parseOperatorSpec");
+            Console.WriteLine("parseOperatorSpec "+opSpec+" with "+ opParams==null?"0":opParams.Length+" params");
             switch (opSpec.ToUpper()) {
                 case "COUNT": {
                         if(opParams.Length != 0) {
@@ -218,7 +218,7 @@ namespace Operator {
 
         public void registerOutputOperator(string opId, string opURL, int replicaIndex)
         {
-            Console.WriteLine(opId + " subscribed to " + myOpId);
+            Console.WriteLine(opId + " subscribed to " + myOpId + "replica "+replicaIndex);
             IOperatorService service = getOperatorServiceByURL(opURL);
             lock (outputOps) {
                 IList<IOperatorService> replicas;
@@ -227,6 +227,7 @@ namespace Operator {
                     outputOps.Add(opId, replicas);
                 }
                 replicas.Add(service);
+                Console.WriteLine(myOpId + " now has " + outputOps.Count + " subscribers");
             }
         }
 

@@ -76,8 +76,10 @@ namespace Operator {
                         IList<string> inTuple = i.getTuple();
                         if(inTuple != null)
                         {
+                            Console.WriteLine("StreamEngine: input " + inTuple.ElementAt(0));
                             foreach (IList<string> tuple in op.processTuple(inTuple))
                             {
+                                Console.WriteLine("StreamEngine: output " + tuple.ElementAt(0));
                                 /* TODO log the output tuple to the PM */
                                 route.outputTuple(tuple);
                             }
