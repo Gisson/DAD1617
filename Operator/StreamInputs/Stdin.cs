@@ -12,6 +12,7 @@ namespace Operator.StreamInputs
         {
             string line = Console.ReadLine();
             System.Console.WriteLine("StreamInput.Stdin: read "+ line);
+
             string[] words = line.Split(' ');
             List<string> tuple = new List<string>(words);
             return tuple;

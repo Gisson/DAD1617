@@ -109,7 +109,7 @@ namespace Operator {
             inputOpURLs = new List<string>();
             foreach (String input in inputOps) {
 
-                if (input.Equals("-"))
+                if (input.Equals("-") || input.Equals("stdin"))
                 {
                     streamInputs.Add(new StreamInputs.Stdin());
                 } else if(input.Contains("tcp://"))
@@ -126,6 +126,7 @@ namespace Operator {
                 {
                     // assume it's a file
                     //FIXME TODO streamInputs.Add(new StreamInputs.File(input));
+                    Console.WriteLine("not impemented: input file");
                 }
             }
         }
@@ -279,6 +280,8 @@ namespace Operator {
 
 
     class Program {
+        public static bool debug = true;
+
         //args syntax: OpID opURL replicaIndex inputOps Routing OpSpec OpParams;
         static void Main(string[] args) {
             Console.WriteLine("args: ");
@@ -295,6 +298,16 @@ namespace Operator {
                 String routing = args[4];
                 String opSpec = args[5];
                 String[] opParams = (args.Length > 6 ? args[6].Split(',') : null);
+                if(Program.debug) {
+                    Console.WriteLine("opID: " + opID);
+                    Console.WriteLine("opURL: " + opURL);
+                    Console.WriteLine("replicaIndex: " + replicaIndex);
+                    Console.WriteLine("inputOps: " + String.Join(" ",inputOps));
+                    Console.WriteLine("routing: " + routing);
+                    Console.WriteLine("opSpec: " + opSpec);
+                    Console.WriteLine("opParams: " + String.Join(" ",opParams));
+                    Console.WriteLine();
+                }
 
 
                 Operator op = new Operator(opID, opURL, replicaIndex, routing);

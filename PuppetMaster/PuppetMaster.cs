@@ -118,7 +118,8 @@ namespace PuppetMaster {
             Replicas opReplicas = new Dictionary<String, IOperatorService>();
             for (int i = 0; i < repFact; i++)
             {
-                String opURL = addresses[i] + i + opID; //small hack to avoid already registered service names
+                //String opURL = addresses[i] + i + opID; //small hack to avoid already registered service names
+                String opURL = addresses[i]; // the hack is not needed
 
                 // OpID opURL replicaIndex inputOps Routing OpSpec OpParams
                 String args = opID + " " + opURL + " " + i + " " + configArgs;
