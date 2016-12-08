@@ -16,7 +16,10 @@ namespace PCS {
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = OPERATOR;
             startInfo.Arguments = args;
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            if (!ProcessCreationApp.debug)
+            {
+                startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            }
             Process process = new Process();
             process.StartInfo = startInfo;
             process.Start();
