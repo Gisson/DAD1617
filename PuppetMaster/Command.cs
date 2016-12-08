@@ -155,6 +155,13 @@ namespace PuppetMaster {
         private int RepFact;
 
         public ConfigureOperator(String opID, String[] inputOps, int repFact, String routing, String[] addresses, String[] opSpec) {
+            Console.WriteLine("new String.Join: opID="+ opID
+                + " inputOps=" + String.Join(";", inputOps)
+                + " repFact=" + repFact
+                + " routing=" + routing
+                + " addresses=" + String.Join(";", addresses)
+                + " opSpec=" + String.Join(";", opSpec)
+                );
             OpID = opID;
             InputOps = inputOps;
             RepFact = repFact;
@@ -166,24 +173,35 @@ namespace PuppetMaster {
         /*TODO: MOVE THIS FROM HERE, TOO MUCH PARSY*/
         public void execute() {
             Replicas inputOpReplicas = new Dictionary<String, IOperatorService>();
-            String inputOpURLs = "null";
-            String inputFiles = "null";
+            List<String> fullInputOPs = new List<String>();
 
             //get urls
             foreach (String inputOpID in InputOps) {
+                /* only the operator cares if it's a file or not
                 //is it a file?
                 if (File.Exists(PuppetMaster.getInputDir() + inputOpID)) {
                     if (inputFiles != "") inputFiles += ",";
                     inputFiles += inputOpID;
                 }
-                else { //get all replicas from input OP
+                else
+                */
+                { //get all replicas from input OP
+                    // FIXME? assuming that the input OPs have already been previously added
                     if (PuppetMaster.OperatorTable.TryGetValue(inputOpID, out inputOpReplicas)) {
                         //put together urls and separate by commas
-                        inputOpURLs = String.Join(",", inputOpReplicas.Keys.ToArray());
+                        foreach (String url in inputOpReplicas.Keys.ToArray())
+                        {
+                            fullInputOPs.Add(url);
+                        }
+                    } else
+                    {
+                        // assume it's a file. not really relevant at this point since only the operator will try to open it
+                        fullInputOPs.Add(inputOpID);
                     }
                 }
             }
-            String configArgs = inputFiles + " " + inputOpURLs + " " + Routing + " " + OpSpec;
+            // inputOps Routing OpSpec OpParams
+            String configArgs = String.Join(",", fullInputOPs) + " " + Routing + " " + OpSpec;
             PuppetMaster.addOperator(OpID, RepFact, Addresses, configArgs);
         }
     }

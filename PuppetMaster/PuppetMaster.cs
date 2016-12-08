@@ -119,6 +119,8 @@ namespace PuppetMaster {
             for (int i = 0; i < repFact; i++)
             {
                 String opURL = addresses[i] + i + opID; //small hack to avoid already registered service names
+
+                // OpID opURL replicaIndex inputOps Routing OpSpec OpParams
                 String args = opID + " " + opURL + " " + i + " " + configArgs;
 
                 bool pcsOK = false;
@@ -135,6 +137,7 @@ namespace PuppetMaster {
                     }
                 }
                 IOperatorService op = (IOperatorService)Activator.GetObject(typeof(IOperatorService), opURL);
+
                 opReplicas.Add(new KeyValuePair<String, IOperatorService>(opURL, op));
             }
             //add created replicas to operator table, associating them with the new OP
