@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommonTypes;
 
 namespace Operator.StreamOperators {
 
@@ -26,7 +27,15 @@ namespace Operator.StreamOperators {
 
         public IList<IList<string>> processTuple(IList<string> inputTuple) {
             IList<IList<string>> outputTuples = new List<IList<string>>();
-            String field = inputTuple.ElementAt(FieldNumber);
+            string field = "";
+            try
+            {
+                field = inputTuple.ElementAt(FieldNumber);
+            }catch(ArgumentOutOfRangeException)
+            {
+                Logger.errorWriteLine("index "+FieldNumber+" is out of range for tuple " + inputTuple);
+                return outputTuples;
+            }
             int fieldInt=0, valueInt=0;
             bool areInt = int.TryParse(field, out fieldInt) && int.TryParse(Value, out valueInt);
             int result;
