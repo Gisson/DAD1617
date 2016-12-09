@@ -78,10 +78,10 @@ namespace Operator {
                         IList<string> inTuple = i.getTuple();
                         if(inTuple != null)
                         {
-                            Logger.debugWriteLine("StreamEngine: input " + inTuple.ElementAt(0));
+                            Logger.debugWriteLine("StreamEngine: input[0]: " + inTuple.ElementAt(0));
                             foreach (IList<string> tuple in op.processTuple(inTuple))
                             {
-                                Logger.debugWriteLine("StreamEngine: output " + tuple.ElementAt(0));
+                                Logger.debugWriteLine("StreamEngine: output[0] " + tuple.ElementAt(0));
                                 /* TODO log the output tuple to the PM */
                                 route.outputTuple(tuple);
                             }

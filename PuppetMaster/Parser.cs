@@ -39,7 +39,7 @@ namespace PuppetMaster {
         /// </summary>
         public const String RGX_URI = @"tcp://(?<host>(\w|\.)+):\d{4,5}\w+/\w+";
         private const String RGX_ADDRESS = @"ADDRESS ((" +RGX_URI+ @")(, ?)?)+ ";
-        private const String RGX_STRING = @"""(\w|\W)*"""; // matches "www.tecnico.ulisboa.pt", with quotes
+        private const String RGX_STRING = @"((\w|\W)*)"; // matches a"www.tecnico.ulisboa.pt"aa, with(out) quotes
         private const String RGX_INT = @"\d+";
         private const String RGX_SPEC_FILTER = @"filter \d+,(>|<|=),((" + RGX_STRING + @")|(" + RGX_INT + @"))";
         private const String RGX_SPEC_CUSTOM = @"custom \w+\.\w+,\w+,\w+";

@@ -14,9 +14,12 @@ using Operator.StreamOperators;
 using Operator.Commands;
 using System.Collections.Concurrent;
 using CommonTypes;
+using System.IO;
 
 namespace Operator {
     public class Operator : IOperator, ICommandableOperator {
+
+        public static readonly string[] TRY_PATHS = { "", "InputFiles\\", "..\\..\\..\\InputFiles\\" };
         string myOpId;
         string myOpURL;
         int myReplicaIndex;
@@ -55,7 +58,7 @@ namespace Operator {
         }
 
         public void parseOperatorSpec(String opSpec, String[] opParams) {
-            Logger.debugWriteLine("parseOperatorSpec "+opSpec+" with "+ opParams==null?"0":opParams.Length+" params");
+            Logger.debugWriteLine("parseOperatorSpec "+opSpec+" with "+ opParams.Length+" params");
             switch (opSpec.ToUpper()) {
                 case "COUNT": {
                         if(opParams.Length != 0) {
@@ -86,16 +89,16 @@ namespace Operator {
                             throw new Exception("FILTER needs 3 arguments");
                         }
                         streamOp = new Filter(
-                            Int32.Parse(opParams[0]),
+                            Int32.Parse(opParams[0]) -1,
                             opParams[1],
-                            opParams[2]);
+                            StreamInputs.File.removeQuotes(opParams[2]));
                         break;
                     }
                 case "UNIQ": {
                         if(opParams.Length != 1) {
                             throw new Exception("UNIQ needs 1 argument");
                         }
-                        streamOp = new Uniq(Int32.Parse(opParams[0]));
+                        streamOp = new Uniq(Int32.Parse(opParams[0]) - 1);
                         break;
                     }
                 default: {
@@ -104,6 +107,8 @@ namespace Operator {
                     }
             }
         }
+
+
 
         public void parseInputOperatorsSpec(String[] inputOps)
         {
@@ -123,11 +128,28 @@ namespace Operator {
                         streamInputs.Add(inputStreamOp);
                     }
                 }
-                else
+                else if(input.Contains(".dat"))
                 {
                     // assume it's a file
-                    //FIXME TODO streamInputs.Add(new StreamInputs.File(input));
-                    Logger.errorWriteLine("not impemented: input file");
+                    string path = input;
+                    foreach( string prefix in TRY_PATHS)
+                    {
+                        path = Directory.GetCurrentDirectory() + "\\" + prefix + input;
+                        if(File.Exists(path))
+                        {
+                            Logger.debugWriteLine("parseInputOP: found file " + path);
+                            break;
+                        }
+                    }
+                    StreamInputs.File f = new StreamInputs.File(path);
+                    if (f.isOpen) {
+                        streamInputs.Add(f);
+                    } else
+                    {
+                        Logger.errorWriteLine("parseInputOP: ignoring input '" + input);
+                    }
+                } else {
+                    Logger.errorWriteLine("parseInputOP: don't know what '"+input+"' means");
                 }
             }
         }
@@ -152,9 +174,6 @@ namespace Operator {
 
         /* *** commands *** */
         public void start() {
-            // register ourselves as ouputs
-            // FIXME this is not the best place to to this, but it's a way to make sure the OPs are all running
-            registerInputs(inputOpURLs);
             //start processing and emitting tuples
             pms.writeIntoLog(myOpId, "start");
             /* FIXME routing is wrong */
@@ -214,8 +233,22 @@ namespace Operator {
             foreach (String url in inputOpsURLs) {
                 IOperatorService inputOp = getOperatorServiceByURL(url);
                 /* FIXME we should probably start a new thread here, since not all OPs will be up yet */
+
                 Logger.debugWriteLine("Subscribing to " + url);
-                inputOp.registerOutputOperator(myOpId, myOpURL, myReplicaIndex);
+                while (true)
+                {
+                    try
+                    {
+                        inputOp.registerOutputOperator(myOpId, myOpURL, myReplicaIndex);
+                        break;
+                    }
+                    catch (System.Net.Sockets.SocketException)
+                    {
+                        Console.WriteLine("Waiting for " + url);
+                        Thread.Sleep(100);
+                    }
+                }
+
             }
         }
 
@@ -253,6 +286,10 @@ namespace Operator {
             /* register our operator */
             OperatorService op = new OperatorService(this, this);
             RemotingServices.Marshal(op, serviceName, typeof(OperatorService));
+
+
+            // register ourselves as ouputs
+            registerInputs(inputOpURLs);
         }
 
         private class PuppetMasterMock : IPuppetMasterService {
@@ -301,7 +338,7 @@ namespace Operator {
                 String[] inputOps = args[3].Split(',');
                 String routing = args[4];
                 String opSpec = args[5];
-                String[] opParams = (args.Length > 6 ? args[6].Split(',') : null);
+                String[] opParams = (args.Length > 6 ? args[6].Split(',') : new string[0]);
 
                 Logger.debugWriteLine("opID: " + opID);
                 Logger.debugWriteLine("replicaIndex: " + replicaIndex);
