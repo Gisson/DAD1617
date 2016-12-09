@@ -14,4 +14,4 @@ To run DADSTORM:
 - build the solution (`DADStorm.sln`) using MS Visual Studio
 - launch one PCS executable per machine where an Operator is to be run
 - run the PuppetMaster executable
-- load and run the example configuration file (located in the `InputFiles` folder) using the PuppetMaster GUI
+- load and run the example configuration file (located in the `InputFiles` folder - dadstorm-mini.config is a good start) using the PuppetMaster GUI
