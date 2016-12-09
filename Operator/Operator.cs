@@ -22,6 +22,7 @@ namespace Operator {
         public static readonly string[] TRY_PATHS = { "", "InputFiles\\", "..\\..\\..\\InputFiles\\" };
         string myOpId;
         string myOpURL;
+        string myRoutingPolicy;
         int myReplicaIndex;
         List<string> inputOpURLs;
         /// <summary> OpId, replicaURL[] </summary>
@@ -47,6 +48,7 @@ namespace Operator {
             myOpId = opID;
             myOpURL = opURL;
             myReplicaIndex = replicaIndex;
+            myRoutingPolicy = routing;
             outputOps = new Dictionary<string, IList<IOperatorService>>();
             cmds = new BlockingCollection<Command>(new ConcurrentQueue<Command>());
 
@@ -181,7 +183,15 @@ namespace Operator {
             if(myOpId.Contains("STDOUT")) {
                 // just a little hack for testing
                 r = new Routing.Stdout();
-            } else{
+            } else if (myRoutingPolicy.ToLower().Equals("primary"))
+            {
+                r = new Routing.Primary(outputOps);
+            }
+            else if(myRoutingPolicy.ToLower().Equals("random")){
+                r = new Routing.Random(outputOps);
+            } else
+            {
+                Logger.errorWriteLine("start(): unknown/unimplented routing policy "+ myRoutingPolicy + ". Defaulting to PRIMARY.");
                 r = new Routing.Primary(outputOps);
             }
             engine = new StreamEngine(streamInputs, streamOp, r);
@@ -254,7 +264,7 @@ namespace Operator {
 
         public void registerOutputOperator(string opId, string opURL, int replicaIndex)
         {
-            Logger.debugWriteLine(opId + " subscribed to " + myOpId + "replica "+replicaIndex);
+            Logger.debugWriteLine(opId + " subscribed to " + myOpId + " replica "+replicaIndex);
             IOperatorService service = getOperatorServiceByURL(opURL);
             lock (outputOps) {
                 IList<IOperatorService> replicas;
@@ -349,7 +359,7 @@ namespace Operator {
                 Logger.debugWriteLine("opParams: " + String.Join(" ",opParams));
                 Logger.debugWriteLine();
 
-                Console.Title = "Operator: " + opID;
+                Console.Title = "Operator: " + opID + " " + replicaIndex;
 
                 Operator op = new Operator(opID, opURL, replicaIndex, routing);
                 /* \/ FIXME TODO move these to the construct 'a la' ES ? */

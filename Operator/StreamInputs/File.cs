@@ -67,8 +67,6 @@ namespace Operator.StreamInputs
             {
                 file = new StreamReader(path);
                 _isOpen = true;
-                // FIXME TESTING \/
-                Console.WriteLine(string.Join("|", parse("a, b, sdfsdfsdf,2342343")));
             } catch (System.IO.IOException)
             {
                 Logger.errorWriteLine("Could not open input file " + path);

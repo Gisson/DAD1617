@@ -87,6 +87,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="OperatorService.cs" />
     <Compile Include="Routing\Primary.cs" />
+    <Compile Include="Routing\Random.cs" />
     <Compile Include="Routing\RoutingPolicy.cs" />
     <Compile Include="Routing\Stdout.cs" />
     <Compile Include="StreamEngine.cs" />
