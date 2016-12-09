@@ -209,13 +209,13 @@ namespace Operator {
         public void freeze() {
             //stops processing tuples
             pms.writeIntoLog(myOpId, "freeze");
-            //throw new NotImplementedException();
+            engine.freeze();
         }
 
         public void unfreeze() {
             pms.writeIntoLog(myOpId, "unfreeze");
             //continues processing tuples
-            //throw new NotImplementedException();
+            engine.unfreeze();
         }
 
         public void crash() {

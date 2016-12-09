@@ -54,14 +54,12 @@ namespace Operator
 
         public void forceFreeze()
         {
-            // TODO
-            Logger.errorWriteLine("forceFreeze is not implemented... ignoring");
+            OP.enqueue(new Commands.Freeze(cmdOP, true));
         }
 
         public void forceUnfreeze()
         {
-            // TODO
-            Logger.errorWriteLine("forceUnfreeze is not implemented... ignoring");
+            OP.enqueue(new Commands.Freeze(cmdOP, false));
         }
 
         public void forceCrash()
