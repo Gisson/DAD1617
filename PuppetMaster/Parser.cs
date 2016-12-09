@@ -34,7 +34,10 @@ namespace PuppetMaster {
 
         private const String RGX_INPUT = @"^\w+ INPUT_OPS (\w|\.)+(,(\w|\.)+)* ";
         private const String RGX_REP = @"REP_FACT \d+ ROUTING (primary|hashing\(\d+\)|random) ";
-        private const String RGX_URI = @"tcp://(\w|\.)+:\d{4,5}\w+/\w+";
+        /// <summary>
+        /// the host token is used by PCSManager to extract the host part
+        /// </summary>
+        public const String RGX_URI = @"tcp://(?<host>(\w|\.)+):\d{4,5}\w+/\w+";
         private const String RGX_ADDRESS = @"ADDRESS ((" +RGX_URI+ @")(, ?)?)+ ";
         private const String RGX_STRING = @"""(\w|\W)*"""; // matches "www.tecnico.ulisboa.pt", with quotes
         private const String RGX_INT = @"\d+";

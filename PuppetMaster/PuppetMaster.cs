@@ -32,10 +32,9 @@ namespace PuppetMaster {
     public sealed class PuppetMaster {
         //constants
         private const string SERVICE_NAME = "pms";
-        private const int PORT = 10000;
-        private const String PCS_URL = "tcp://localhost:10001/pcs";
+        public const int PORT = 10000;
 
-        public static IProcessCreationService PCS = null;
+        public static PCSManager PCSMan = new PCSManager();
         //command queue to store instructions and execute later
         public static ConcurrentQueue<ICommand> Commands = new ConcurrentQueue<ICommand>();
         //table with key=op-name|value=replicaList
@@ -84,25 +83,6 @@ namespace PuppetMaster {
                 typeof(PuppetMasterService),
                 SERVICE_NAME,
                 WellKnownObjectMode.Singleton);
-            //connect to PCS// NEVER returns null
-            PCS = (IProcessCreationService)Activator.GetObject(
-                typeof(IProcessCreationService),
-                PCS_URL);
-            bool connected = false;
-            while(!connected)
-            {
-                try
-                {
-                    PCS.ping(); // throws System.Net.Sockets.Exception if not connected
-                    connected = true;
-                    Logger.debugWriteLine("connected");
-                }
-                catch (System.Net.Sockets.SocketException)
-                {
-                    Thread.Sleep(10);
-                }
-            }
-
             //Console.ReadLine();
         }
 
@@ -161,10 +141,18 @@ namespace PuppetMaster {
                 // OpID opURL replicaIndex inputOps Routing OpSpec OpParams
                 String args = opID + " " + opURL + " " + i + " " + configArgs;
 
+
+                IProcessCreationService PCS = PCSMan.getPCSbyReplicaURI(opURL);
+                if(PCS == null)
+                {
+                    Logger.errorWriteLine("couldn't get PCS of OP " + opURL);
+                    continue;
+                }
                 bool pcsOK = false;
                 while (!pcsOK) { 
                     try
                     {
+                        PCS.ping();
                         PCS.createOperator(args);
                         pcsOK = true;
                     }
