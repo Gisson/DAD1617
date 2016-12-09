@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CommonTypes.RemoteInterfaces;
 using System.IO;
 using System.Threading;
+using CommonTypes;
 
 
 namespace PuppetMaster {
@@ -29,7 +30,7 @@ namespace PuppetMaster {
                 new Thread(() => op.forceStart()).Start();
 
             }
-            //Console.WriteLine("Start " + OpID);
+            Logger.debugWriteLine("Start " + OpID);
         }
     }
 
@@ -47,7 +48,7 @@ namespace PuppetMaster {
             foreach (IOperatorService op in PuppetMaster.getOperatorReplicas(OpID)) {
                 new Thread(() => op.forceInterval(Milisec)).Start();
             }
-            //Console.WriteLine("Interval " + OpID + " " + Milisec);
+            Logger.debugWriteLine("Interval " + OpID + " " + Milisec);
         }
     }
 
@@ -59,7 +60,7 @@ namespace PuppetMaster {
             foreach (IOperatorService op in PuppetMaster.getAllOperators()) {
                 new Thread(() => op.getStatus()).Start();
             }
-            //Console.WriteLine("Status");
+            Logger.debugWriteLine("Status");
         }
     }
 
@@ -132,6 +133,7 @@ namespace PuppetMaster {
 
         public void execute() {
             //set logginglevel
+            throw new NotImplementedException("Log is not implemented");
         }
     }
 
@@ -145,6 +147,7 @@ namespace PuppetMaster {
 
         public void execute() {
             //set semantics
+            throw new NotImplementedException("SetSemantics is not implemented");
         }
     }
 

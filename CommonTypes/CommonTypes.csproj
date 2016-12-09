@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logger.cs" />
     <Compile Include="Exceptions\CommandExceptions.cs" />
     <Compile Include="Exceptions\CommonExceptions.cs" />
     <Compile Include="CommonTypes.cs" />

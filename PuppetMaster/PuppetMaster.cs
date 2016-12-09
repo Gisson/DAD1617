@@ -11,6 +11,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Windows.Forms;
 using System.IO;
+using CommonTypes;
 
 /* ********************** HOW THIS WORKS ***************************
  * Main is the starting point.
@@ -48,7 +49,13 @@ namespace PuppetMaster {
         //START HERE
 
         [STAThread]
-        public static void Main() {
+        public static void Main(string[] args)
+        {
+            if (args.Contains("-d") || args.Contains("--debug"))
+            {
+                Logger.debug = true;
+                Logger.debugWriteLine("debug activated");
+            }
             // createUI();
             Thread t = new Thread(() => init());
             t.IsBackground = true; // close thread if application exits
@@ -56,8 +63,10 @@ namespace PuppetMaster {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new DADStormForm());
-
+            Logger.debugWriteLine("PuppetMaster main thread exited");
         }
+
+
 
         public static void init() {
             //Hosts connection with Remote Puppet Master
@@ -78,9 +87,9 @@ namespace PuppetMaster {
                 {
                     PCS.ping(); // throws System.Net.Sockets.Exception if not connected
                     connected = true;
-                    Console.WriteLine("connected");
+                    Logger.debugWriteLine("connected");
                 }
-                catch (System.Net.Sockets.SocketException e)
+                catch (System.Net.Sockets.SocketException)
                 {
                     Thread.Sleep(10);
                 }
@@ -131,7 +140,7 @@ namespace PuppetMaster {
                         PCS.createOperator(args);
                         pcsOK = true;
                     }
-                    catch (System.Net.Sockets.SocketException e)
+                    catch (System.Net.Sockets.SocketException)
                     {
                         Console.WriteLine("Waiting for PCS");
                         Thread.Sleep(100);

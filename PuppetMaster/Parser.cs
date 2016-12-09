@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.IO;
+using CommonTypes;
 
 namespace PuppetMaster {
 
@@ -81,6 +82,7 @@ namespace PuppetMaster {
             //comment
             if (rgxComment.IsMatch(line))
             {
+                Logger.debugWriteLine("Parser: return match COMMENT");
                 return LineSyntax.COMMENT;
             }
             //hack just in case the config file has more spaces than it should, such as the sample one
@@ -151,23 +153,28 @@ namespace PuppetMaster {
             } //invalid command
             else
             {
+                Logger.debugWriteLine("Parser: return match INVALID");
                 return LineSyntax.INVALID;
             }
             //store commands
             if (command != null) {
                 if(queue)
                 {
+                    Logger.debugWriteLine("Parser: Enqueue");
                     PuppetMaster.Commands.Enqueue(command);
                 }
                 else
                 {
+                    Logger.debugWriteLine("Parser: execute");
                     command.execute();
                 }
             } // FIXME
             else
             {
+                Logger.debugWriteLine("Parser: return match INVALID");
                 return LineSyntax.INVALID;
             }
+            Logger.debugWriteLine("Parser: return match VALID");
             return LineSyntax.VALID;
             
         }
