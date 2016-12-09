@@ -21,7 +21,7 @@ namespace PuppetMaster {
         private Parser() { }
 
         //Regex patterns for all commands: i'll clean this up sometime
-        private const String RGX_COMMENT = @"^%.*";
+        private const String RGX_COMMENT = @"^%.*$";
         private const String RGX_START = @"^START \w+$";
         private const String RGX_INTERVAL = @"^INTERVAL \w+ \d+$";
         private const String RGX_STATUS = @"^STATUS$";
@@ -29,13 +29,14 @@ namespace PuppetMaster {
         private const String RGX_FREEZE = @"^FREEZE \w+ \d+$";
         private const String RGX_UNFREEZE = @"^UNFREEZE \w+ \d+$";
         private const String RGX_WAIT = @"^WAIT \d+$";
-        private const String RGX_LOG = @"^LOGGINGLEVEL full|light$";
-        private const String RGX_SEMANTICS = @"^SEMANTICS at-most-once|at-least-once|exactly-once$";
+        private const String RGX_LOG = @"^LOGGINGLEVEL (full|light)$";
+        private const String RGX_SEMANTICS = @"^SEMANTICS (at-most-once|at-least-once|exactly-once)$";
 
         private const String RGX_INPUT = @"^\w+ INPUT_OPS \w+(,\w+)* ";
-        private const String RGX_REP = @"REP_FACT \d+ ROUTING primary|hashing\(\d+\)|random ";
-        private const String RGX_ADDRESS = @"ADDRESS ((tcp://\d+:\d{4,5}\w+/\w+),?)+ ";
-        private const String RGX_SPEC = @"OPERATOR_SPEC (uniq \d+)|(count)|(dup)|(filter \d+,>|<|=,\w+)|(custom \w+\.\w+,\w+,\w+)";
+        private const String RGX_REP = @"REP_FACT \d+ ROUTING (primary|hashing\(\d+\)|random) ";
+        private const String RGX_URI = @"tcp://(\w|\.)+:\d{4,5}\w+/\w+";
+        private const String RGX_ADDRESS = @"ADDRESS ((" +RGX_URI+ @"),?)+ ";
+        private const String RGX_SPEC = @"OPERATOR_SPEC ((uniq \d+)|(count)|(dup)|(filter \d+,>|<|=,\w+)|(custom \w+\.\w+,\w+,\w+))$";
         private const String RGX_CONF = RGX_INPUT + RGX_REP + RGX_ADDRESS + RGX_SPEC;
 
 
@@ -138,7 +139,7 @@ namespace PuppetMaster {
                 String semantics = fields[1];
                 command = new SetSemantics(semantics);
             }
-            //MISSING: LOG & SEMANTICS
+            //TODO MISSING: LOG & SEMANTICS
 
             //configuration of operator
             else if (rgxConf.IsMatch(line))
