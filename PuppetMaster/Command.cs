@@ -140,7 +140,8 @@ namespace PuppetMaster {
 
         public void execute() {
             //set logginglevel
-            throw new NotImplementedException("Log is not implemented");
+            // TODO
+            Logger.errorWriteLine("Log is not implemented... ignoring");
         }
     }
 
@@ -154,7 +155,8 @@ namespace PuppetMaster {
 
         public void execute() {
             //set semantics
-            throw new NotImplementedException("SetSemantics is not implemented");
+            // TODO
+            Logger.errorWriteLine("SetSemantics is not implemented... ignoring");
         }
     }
 

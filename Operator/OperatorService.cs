@@ -28,7 +28,7 @@ namespace Operator
 
         /* FIXME does this need to be here? */
         public void connectToPuppetMaster(String puppetMasterURL) { //for logging when needed
-            throw new NotImplementedException();
+            Logger.errorWriteLine("connectToPuppetMaster is not implemented... ignoring");
         }
 
         //registers as a subscriber: ask to input operator to provide tuples when possible
@@ -47,30 +47,39 @@ namespace Operator
             OP.enqueue(new Commands.Start(cmdOP));
         }
 
-        public void forceInterval(int milliseconds) {
-            throw new NotImplementedException();
+        public void forceInterval(int milliseconds)
+        {
+            // TODO
+            Logger.errorWriteLine("forceInterval is not implemented... ignoring");
         }
 
-        public void forceFreeze() {
-            throw new NotImplementedException();
+        public void forceFreeze()
+        {
+            // TODO
+            Logger.errorWriteLine("forceFreeze is not implemented... ignoring");
         }
 
-        public void forceUnfreeze() {
-            throw new NotImplementedException();
+        public void forceUnfreeze()
+        {
+            // TODO
+            Logger.errorWriteLine("forceUnfreeze is not implemented... ignoring");
         }
 
-        public void forceCrash() {
-            throw new NotImplementedException();
+        public void forceCrash()
+        {
+            // TODO
+            Logger.errorWriteLine("forceCrash is not implemented... ignoring");
         }
 
-        public void getStatus() {
-            throw new NotImplementedException();
+        public void getStatus()
+        {
+            // TODO
+            Logger.errorWriteLine("getStatus is not implemented... ignoring");
         }
 
         public void registerOutputOperator(string opId, string opURL, int replicaIndex)
         {
             OP.registerOutputOperator(opId, opURL, replicaIndex);
-            //throw new NotImplementedException();
         }
         public void ping()
         {
