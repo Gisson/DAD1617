@@ -132,7 +132,10 @@ namespace PuppetMaster {
         //get all replicas from an operator
         public static IList<IOperatorService> getOperatorReplicas(String opId) {
             Replicas replicas;
-            OperatorTable.TryGetValue(opId, out replicas);
+            if(!OperatorTable.TryGetValue(opId, out replicas))
+            {
+                return null;
+            }
             return replicas.Values.ToList();
         }
 

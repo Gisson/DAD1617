@@ -27,7 +27,14 @@ namespace PuppetMaster {
 
         public void execute() {
             foreach (IOperatorService op in PuppetMaster.getOperatorReplicas(OpID)) {
-                new Thread(() => op.forceStart()).Start();
+                if (op != null)
+                {
+                    new Thread(() => op.forceStart()).Start();
+                }
+                else
+                {
+                    Logger.errorWriteLine("can't find replicas for " + OpID);
+                }
 
             }
             Logger.debugWriteLine("Start " + OpID);
