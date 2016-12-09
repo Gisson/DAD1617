@@ -201,8 +201,9 @@ namespace Operator {
 
         public void interval(int milliseconds) {
             //sleep between consecutive events
-            pms.writeIntoLog(myOpId, "interval");
-            //throw new NotImplementedException();
+            pms.writeIntoLog(myOpId, "interval " + milliseconds);
+            // the setter has a lock mechanism
+            engine.Interval = milliseconds;
         }
 
         public void freeze() {

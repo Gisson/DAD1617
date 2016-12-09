@@ -81,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\ForceInterval.cs" />
     <Compile Include="Commands\Start.cs" />
     <Compile Include="IOperator.cs" />
     <Compile Include="Operator.cs" />

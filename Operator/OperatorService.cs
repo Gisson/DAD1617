@@ -49,8 +49,7 @@ namespace Operator
 
         public void forceInterval(int milliseconds)
         {
-            // TODO
-            Logger.errorWriteLine("forceInterval is not implemented... ignoring");
+            OP.enqueue(new Commands.ForceInterval(cmdOP, milliseconds));
         }
 
         public void forceFreeze()
