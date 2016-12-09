@@ -165,7 +165,7 @@ namespace PuppetMaster {
         private int RepFact;
 
         public ConfigureOperator(String opID, String[] inputOps, int repFact, String routing, String[] addresses, String[] opSpec) {
-            Console.WriteLine("new String.Join: opID="+ opID
+            Logger.debugWriteLine("new String.Join: opID="+ opID
                 + " inputOps=" + String.Join(";", inputOps)
                 + " repFact=" + repFact
                 + " routing=" + routing

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using CommonTypes.RemoteInterfaces;
+using CommonTypes;
 
 namespace PCS {
     class ProcessCreationService : MarshalByRefObject, IProcessCreationService {
@@ -16,7 +17,7 @@ namespace PCS {
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = OPERATOR;
             startInfo.Arguments = args;
-            if (!ProcessCreationApp.debug)
+            if (!Logger.debug)
             {
                 startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             }
@@ -27,6 +28,7 @@ namespace PCS {
         public void ping()
         {
             // do nothing
+            Logger.debugWriteLine("received ping");
         }
     }
 }

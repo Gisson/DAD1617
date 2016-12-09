@@ -39,7 +39,7 @@ namespace PuppetMaster {
         void IPuppetMasterService.ping()
         {
             // do nothing
-            throw new NotImplementedException();
+            Logger.debugWriteLine("received ping");
         }
     }
 }

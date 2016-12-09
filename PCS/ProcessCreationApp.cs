@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting;
+using CommonTypes;
 
 namespace PCS {
     class ProcessCreationApp {
         private const int PORT = 10001;
         private const String SERVICE_NAME = "pcs";
 
-        public static bool debug = false;
 
         [STAThread]
         static void Main(string[] args) {
@@ -25,12 +25,15 @@ namespace PCS {
 
             if(args.Contains("-d") || args.Contains("--debug"))
             {
-                debug = true;
+                Logger.debug = true;
                 Console.WriteLine("debug activated");
             }
 
+
+            Console.Title = "PCS";
+
             Console.WriteLine("press any key to exit");
-            System.Console.ReadLine();
+            Console.ReadLine();
         }
     }
 }
