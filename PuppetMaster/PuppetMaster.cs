@@ -52,6 +52,8 @@ namespace PuppetMaster {
         [STAThread]
         public static void Main(string[] args)
         {
+            Console.Title = "PuppetMaster";
+
             if (args.Contains("-d") || args.Contains("--debug"))
             {
                 Logger.debug = true;

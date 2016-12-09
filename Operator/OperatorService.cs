@@ -75,6 +75,7 @@ namespace Operator
         public void ping()
         {
             // do nothing
+            Logger.debugWriteLine("received ping");
         }
     }
 }

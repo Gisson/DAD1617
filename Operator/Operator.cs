@@ -258,6 +258,7 @@ namespace Operator {
             public void ping()
             {
                 // do nothing
+                Logger.debugWriteLine("PMMOCK: received ping");
             }
 
             public void writeIntoLog(string opID, string logMessage)
@@ -310,6 +311,7 @@ namespace Operator {
                 Logger.debugWriteLine("opParams: " + String.Join(" ",opParams));
                 Logger.debugWriteLine();
 
+                Console.Title = "Operator: " + opID;
 
                 Operator op = new Operator(opID, opURL, replicaIndex, routing);
                 /* \/ FIXME TODO move these to the construct 'a la' ES ? */
