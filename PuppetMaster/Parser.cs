@@ -32,11 +32,15 @@ namespace PuppetMaster {
         private const String RGX_LOG = @"^LOGGINGLEVEL (full|light)$";
         private const String RGX_SEMANTICS = @"^SEMANTICS (at-most-once|at-least-once|exactly-once)$";
 
-        private const String RGX_INPUT = @"^\w+ INPUT_OPS \w+(,\w+)* ";
+        private const String RGX_INPUT = @"^\w+ INPUT_OPS (\w|\.)+(,(\w|\.)+)* ";
         private const String RGX_REP = @"REP_FACT \d+ ROUTING (primary|hashing\(\d+\)|random) ";
         private const String RGX_URI = @"tcp://(\w|\.)+:\d{4,5}\w+/\w+";
-        private const String RGX_ADDRESS = @"ADDRESS ((" +RGX_URI+ @"),?)+ ";
-        private const String RGX_SPEC = @"OPERATOR_SPEC ((uniq \d+)|(count)|(dup)|(filter \d+,>|<|=,\w+)|(custom \w+\.\w+,\w+,\w+))$";
+        private const String RGX_ADDRESS = @"ADDRESS ((" +RGX_URI+ @")(, ?)?)+ ";
+        private const String RGX_STRING = @"""(\w|\W)*"""; // matches "www.tecnico.ulisboa.pt", with quotes
+        private const String RGX_INT = @"\d+";
+        private const String RGX_SPEC_FILTER = @"filter \d+,(>|<|=),((" + RGX_STRING + @")|(" + RGX_INT + @"))";
+        private const String RGX_SPEC_CUSTOM = @"custom \w+\.\w+,\w+,\w+";
+        private const String RGX_SPEC = @"OPERATOR_SPEC ((uniq \d+)|(count)|(dup)|("+ RGX_SPEC_FILTER + ")|("+ RGX_SPEC_CUSTOM + "))( )*$";
         private const String RGX_CONF = RGX_INPUT + RGX_REP + RGX_ADDRESS + RGX_SPEC;
 
 
