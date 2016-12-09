@@ -18,26 +18,31 @@ namespace PuppetMaster {
     }
 
     //start
-    public class Start : ICommand {
+    public class Start : ICommand
+    {
         private String OpID;
 
-        public Start(String opID) {
+        public Start(String opID)
+        {
             OpID = opID;
         }
 
-        public void execute() {
-            foreach (IOperatorService op in PuppetMaster.getOperatorReplicas(OpID)) {
-                if (op != null)
+        public void execute()
+        {
+            IList<IOperatorService> replicas = PuppetMaster.getOperatorReplicas(OpID);
+            if (replicas != null)
+            {
+                foreach (IOperatorService op in replicas)
                 {
                     new Thread(() => op.forceStart()).Start();
                 }
-                else
-                {
-                    Logger.errorWriteLine("can't find replicas for " + OpID);
-                }
 
+                Logger.debugWriteLine("Start " + OpID);
             }
-            Logger.debugWriteLine("Start " + OpID);
+            else
+            {
+                Logger.errorWriteLine("can't find replicas for " + OpID);
+            }
         }
     }
 
@@ -52,9 +57,23 @@ namespace PuppetMaster {
         }
 
         public void execute() {
-            foreach (IOperatorService op in PuppetMaster.getOperatorReplicas(OpID)) {
-                new Thread(() => op.forceInterval(Milisec)).Start();
+
+
+            IList<IOperatorService> replicas = PuppetMaster.getOperatorReplicas(OpID);
+            if (replicas != null)
+            {
+                foreach (IOperatorService op in replicas)
+                {
+                    new Thread(() => op.forceInterval(Milisec)).Start();
+                }
+
+                Logger.debugWriteLine("Interval " + OpID);
             }
+            else
+            {
+                Logger.errorWriteLine("can't find replicas for " + OpID);
+            }
+                            
             Logger.debugWriteLine("Interval " + OpID + " " + Milisec);
         }
     }
@@ -97,7 +116,14 @@ namespace PuppetMaster {
         }
 
         public void execute() {
-            new Thread(() => PuppetMaster.getOperator(OpID, ReplicaIndex).forceFreeze()).Start();
+            IOperatorService op = PuppetMaster.getOperator(OpID, ReplicaIndex);
+            if (op == null)
+            {
+                new Thread(() => op.forceFreeze()).Start();
+            } else
+            {
+                Logger.errorWriteLine("Freeze.execute: OP not found: " + OpID);
+            }
         }
     }
 
@@ -111,8 +137,17 @@ namespace PuppetMaster {
             ReplicaIndex = rep;
         }
 
-        public void execute() {
-            new Thread(() => PuppetMaster.getOperator(OpID, ReplicaIndex).forceUnfreeze()).Start();
+        public void execute()
+        {
+            IOperatorService op = PuppetMaster.getOperator(OpID, ReplicaIndex);
+            if (op == null)
+            {
+                new Thread(() => op.forceUnfreeze()).Start();
+            }
+            else
+            {
+                Logger.errorWriteLine("Unfreeze.execute: OP not found: " + OpID);
+            }
         }
     }
 

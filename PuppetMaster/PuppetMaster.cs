@@ -104,11 +104,22 @@ namespace PuppetMaster {
 
 
         //get specific operator replica
-        public static IOperatorService getOperator(String opId, int replicaIndex) {
+        public static IOperatorService getOperator(String opId, int replicaIndex)
+        {
             Replicas replicas;
-            OperatorTable.TryGetValue(opId, out replicas);
-            //FIXME
-            return replicas.Values.ElementAt(replicaIndex);
+            if (!OperatorTable.TryGetValue(opId, out replicas))
+            {
+                Logger.errorWriteLine("OP not found: " + opId);
+                return null;
+            }
+            try
+            {
+                return replicas.Values.ElementAt(replicaIndex);
+            } catch(ArgumentOutOfRangeException)
+            {
+                Logger.errorWriteLine("OP " + opId + "replica not found: " + replicaIndex);
+                return null;
+            }
         }
 
         //get all replicas from an operator
@@ -209,7 +220,6 @@ namespace PuppetMaster {
             }
             return dirInfo.GetDirectories("InputFiles").First().FullName + "\\";
         }
-
 
         public static void executeInstructions(bool step) {
             ICommand command;
