@@ -46,6 +46,7 @@ namespace PuppetMaster {
         static PuppetMaster() { }
         private PuppetMaster() { }
 
+        
         //START HERE
 
         [STAThread]
@@ -57,9 +58,14 @@ namespace PuppetMaster {
                 Logger.debugWriteLine("debug activated");
             }
             // createUI();
-            Thread t = new Thread(() => init());
-            t.IsBackground = true; // close thread if application exits
-            t.Start();
+            Thread tInit = new Thread(() => init());
+            tInit.IsBackground = true; // close thread if application exits
+            tInit.Start();
+
+            Thread tPrompt = new Thread(() => commandPrompt());
+            tPrompt.IsBackground = true; // close thread if application exits
+            tPrompt.Start();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new DADStormForm());
@@ -95,8 +101,25 @@ namespace PuppetMaster {
                 }
             }
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }
+
+        /// <summary>
+        /// reads commands from stdin and executes them
+        /// </summary>
+        public static void commandPrompt()
+        {
+            String line;
+            while((line = Console.ReadLine()) != null)
+            {
+                Logger.debugWriteLine("read: " + line);
+                if(Parser.executeLine(line, false) != LineSyntax.VALID)
+                {
+                    Logger.errorWriteLine("Syntax error");
+                }
+            }
+        }
+
 
         //get specific operator replica
         public static IOperatorService getOperator(String opId, int replicaIndex) {
