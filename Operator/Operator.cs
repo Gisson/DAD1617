@@ -145,6 +145,7 @@ namespace Operator {
             {
                 Command c = cmds.Take();
                 /* TODO this is a good place to log executed commands synchronously */
+                Logger.debugWriteLine("executing queued command: " + c.Name);
                 c.execute();
             }
         }
@@ -158,7 +159,7 @@ namespace Operator {
             pms.writeIntoLog(myOpId, "start");
             /* FIXME routing is wrong */
             Routing.RoutingPolicy r;
-            if(myOpId.StartsWith("-")) {
+            if(myOpId.Contains("STDOUT")) {
                 // just a little hack for testing
                 r = new Routing.Stdout();
             } else{
@@ -320,8 +321,8 @@ namespace Operator {
                 op.connectToPuppetMaster();
 
                 op.launchService();
-                // FIXME testing
-                op.start();
+
+                //op.start();  // FIXME testing
             }
             catch (Exception e) { Logger.errorWriteLine(e.ToString()); }
 

@@ -9,7 +9,18 @@ namespace Operator.Commands
     /// abstract command (command pattern)
     public abstract class Command
     {
-        protected string name;
+        private string name;
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+            protected set
+            {
+                name = value;
+            }
+        }
         protected ICommandableOperator op;
         protected ICommandableOperator Operator
         {
