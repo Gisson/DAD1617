@@ -44,8 +44,27 @@ namespace PuppetMaster {
          * while parsing the file
          */
         public static void execute(String pathToFile, Action<String, LineSyntax> PreviewTextBox_Update) {
-            String line;
+
             StreamReader file = new StreamReader(pathToFile);
+            String line;
+
+
+            //read each line from file
+            while ((line = file.ReadLine()) != null)
+            {
+                PreviewTextBox_Update(line, executeLine(line, true));
+            }
+            file.Close();
+        }
+
+        /// <summary>
+        /// parses a single line and queues/executes it
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="queue">true if the command is to be enqueue. False mean it should be ran immediately</param>
+        /// <returns></returns>
+        public static LineSyntax executeLine(string line, bool queue)
+        {
             //regex init
             Regex rgxComment = new Regex(RGX_COMMENT, RegexOptions.IgnoreCase);
             Regex rgxStart = new Regex(RGX_START, RegexOptions.IgnoreCase);
@@ -59,78 +78,98 @@ namespace PuppetMaster {
             Regex rgxSemantics = new Regex(RGX_SEMANTICS, RegexOptions.IgnoreCase);
             Regex rgxConf = new Regex(RGX_CONF, RegexOptions.IgnoreCase);
 
-            //read each line from file
-            while ((line = file.ReadLine()) != null) {
-                //comment
-                if (rgxComment.IsMatch(line)) {
-                    PreviewTextBox_Update(line, LineSyntax.COMMENT);
-                    continue;
-                }
-                //hack just in case the config file has more spaces than it should, such as the sample one
-                line = line.Replace(", ", ",");
-                String[] fields = line.Split(' ');
-                ICommand command = null;
-                //start
-                if (rgxStart.IsMatch(line)) {
-                    String opID = fields[1];
-                    command = new Start(opID);
-                } //interval
-                else if (rgxInterval.IsMatch(line)) {
-                    String opID = fields[1];
-                    int millisec = Int32.Parse(fields[2]);
-                    command = new Interval(opID, millisec);
-                } //status
-                else if (rgxStatus.IsMatch(line)) {
-                    command = new Status();
-                } //crash
-                else if (rgxCrash.IsMatch(line)) {
-                    String opID = fields[1];
-                    int rep = Int32.Parse(fields[2]);
-                    command = new Crash(opID, rep);
-                } //unfreeze
-                else if (rgxUnfreeze.IsMatch(line)) {
-                    String opID = fields[1];
-                    int rep = Int32.Parse(fields[2]);
-                    command = new Unfreeze(opID, rep);
-                } //freeze
-                else if (rgxFreeze.IsMatch(line)) {
-                    String opID = fields[1];
-                    int rep = Int32.Parse(fields[2]);
-                    command = new Freeze(opID, rep);
-                } //wait
-                else if (rgxWait.IsMatch(line)) {
-                    int millisec = Int32.Parse(fields[1]);
-                    command = new Wait(millisec);
-                }
-                else if (rgxLog.IsMatch(line)) {
-                    String loggingLevel = fields[1];
-                    command = new Log(loggingLevel);
-                }
-                else if (rgxSemantics.IsMatch(line)) {
-                    String semantics = fields[1];
-                    command = new SetSemantics(semantics);
-                }
-                //MISSING: LOG & SEMANTICS
-
-                    //configuration of operator
-                else if (rgxConf.IsMatch(line)) {
-                    String opID = fields[0];
-                    String[] inputOps = fields[2].Split(',');
-                    int repFact = Int32.Parse(fields[4]);
-                    String routing = fields[6];
-                    String[] addresses = fields[8].Split(',');
-                    String[] opSpec = fields.Skip(10).ToArray();
-                    command = new ConfigureOperator(opID, inputOps, repFact, routing, addresses, opSpec);
-                } //invalid command
-                else {
-                    PreviewTextBox_Update(line, LineSyntax.INVALID);
-                    continue;
-                }
-                //store commands
-                if (command != null) { PuppetMaster.Commands.Enqueue(command); }
-                PreviewTextBox_Update(line, LineSyntax.VALID);
+            //comment
+            if (rgxComment.IsMatch(line))
+            {
+                return LineSyntax.COMMENT;
             }
-            file.Close();
+            //hack just in case the config file has more spaces than it should, such as the sample one
+            line = line.Replace(", ", ",");
+            String[] fields = line.Split(' ');
+            ICommand command = null;
+            //start
+            if (rgxStart.IsMatch(line))
+            {
+                String opID = fields[1];
+                command = new Start(opID);
+            } //interval
+            else if (rgxInterval.IsMatch(line))
+            {
+                String opID = fields[1];
+                int millisec = Int32.Parse(fields[2]);
+                command = new Interval(opID, millisec);
+            } //status
+            else if (rgxStatus.IsMatch(line))
+            {
+                command = new Status();
+            } //crash
+            else if (rgxCrash.IsMatch(line))
+            {
+                String opID = fields[1];
+                int rep = Int32.Parse(fields[2]);
+                command = new Crash(opID, rep);
+            } //unfreeze
+            else if (rgxUnfreeze.IsMatch(line))
+            {
+                String opID = fields[1];
+                int rep = Int32.Parse(fields[2]);
+                command = new Unfreeze(opID, rep);
+            } //freeze
+            else if (rgxFreeze.IsMatch(line))
+            {
+                String opID = fields[1];
+                int rep = Int32.Parse(fields[2]);
+                command = new Freeze(opID, rep);
+            } //wait
+            else if (rgxWait.IsMatch(line))
+            {
+                int millisec = Int32.Parse(fields[1]);
+                command = new Wait(millisec);
+            }
+            else if (rgxLog.IsMatch(line))
+            {
+                String loggingLevel = fields[1];
+                command = new Log(loggingLevel);
+            }
+            else if (rgxSemantics.IsMatch(line))
+            {
+                String semantics = fields[1];
+                command = new SetSemantics(semantics);
+            }
+            //MISSING: LOG & SEMANTICS
+
+            //configuration of operator
+            else if (rgxConf.IsMatch(line))
+            {
+                String opID = fields[0];
+                String[] inputOps = fields[2].Split(',');
+                int repFact = Int32.Parse(fields[4]);
+                String routing = fields[6];
+                String[] addresses = fields[8].Split(',');
+                String[] opSpec = fields.Skip(10).ToArray();
+                command = new ConfigureOperator(opID, inputOps, repFact, routing, addresses, opSpec);
+            } //invalid command
+            else
+            {
+                return LineSyntax.INVALID;
+            }
+            //store commands
+            if (command != null) {
+                if(queue)
+                {
+                    PuppetMaster.Commands.Enqueue(command);
+                }
+                else
+                {
+                    command.execute();
+                }
+            } // FIXME
+            else
+            {
+                return LineSyntax.INVALID;
+            }
+            return LineSyntax.VALID;
+            
         }
     }
 
