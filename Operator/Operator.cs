@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using Operator.StreamOperators;
 using Operator.Commands;
 using System.Collections.Concurrent;
+using CommonTypes;
 
 namespace Operator {
     public class Operator : IOperator, ICommandableOperator {
@@ -54,7 +55,7 @@ namespace Operator {
         }
 
         public void parseOperatorSpec(String opSpec, String[] opParams) {
-            Console.WriteLine("parseOperatorSpec "+opSpec+" with "+ opParams==null?"0":opParams.Length+" params");
+            Logger.debugWriteLine("parseOperatorSpec "+opSpec+" with "+ opParams==null?"0":opParams.Length+" params");
             switch (opSpec.ToUpper()) {
                 case "COUNT": {
                         if(opParams.Length != 0) {
@@ -98,7 +99,7 @@ namespace Operator {
                         break;
                     }
                 default: {
-                        Console.WriteLine("unknown operator spec" + opSpec);
+                        Logger.debugWriteLine("unknown operator spec" + opSpec);
                         break;
                     }
             }
@@ -126,7 +127,7 @@ namespace Operator {
                 {
                     // assume it's a file
                     //FIXME TODO streamInputs.Add(new StreamInputs.File(input));
-                    Console.WriteLine("not impemented: input file");
+                    Logger.errorWriteLine("not impemented: input file");
                 }
             }
         }
@@ -139,7 +140,7 @@ namespace Operator {
         /// <summary> thread that processes queued commands </summary>
         private void processCommands()
         {
-            Console.WriteLine("Command Thread starting...");
+            Logger.debugWriteLine("Command Thread starting...");
             while (!cmds.IsCompleted)
             {
                 Command c = cmds.Take();
@@ -212,14 +213,14 @@ namespace Operator {
             foreach (String url in inputOpsURLs) {
                 IOperatorService inputOp = getOperatorServiceByURL(url);
                 /* FIXME we should probably start a new thread here, since not all OPs will be up yet */
-                Console.WriteLine("Subscribing to " + url);
+                Logger.debugWriteLine("Subscribing to " + url);
                 inputOp.registerOutputOperator(myOpId, myOpURL, myReplicaIndex);
             }
         }
 
         public void registerOutputOperator(string opId, string opURL, int replicaIndex)
         {
-            Console.WriteLine(opId + " subscribed to " + myOpId + "replica "+replicaIndex);
+            Logger.debugWriteLine(opId + " subscribed to " + myOpId + "replica "+replicaIndex);
             IOperatorService service = getOperatorServiceByURL(opURL);
             lock (outputOps) {
                 IList<IOperatorService> replicas;
@@ -228,7 +229,7 @@ namespace Operator {
                     outputOps.Add(opId, replicas);
                 }
                 replicas.Add(service);
-                Console.WriteLine(myOpId + " now has " + outputOps.Count + " subscribers");
+                Logger.debugWriteLine(myOpId + " now has " + outputOps.Count + " subscribers");
             }
         }
 
@@ -239,7 +240,7 @@ namespace Operator {
 
         public void launchService() {
             Match match = Regex.Match(myOpURL, @"^tcp://[\w\.]+:(\d{4,5})/(\w+)$");
-            System.Console.WriteLine(match.Groups[1].Value);
+            Logger.debugWriteLine(match.Groups[1].Value);
             int port = Int32.Parse(match.Groups[1].Value);
             String serviceName = match.Groups[2].Value;
 
@@ -284,12 +285,13 @@ namespace Operator {
 
         //args syntax: OpID opURL replicaIndex inputOps Routing OpSpec OpParams;
         static void Main(string[] args) {
-            Console.WriteLine("args: ");
+            Logger.debug = debug;
+            Logger.debugWriteLine("args: ");
             for (int i = 0; i < args.Length; i++)
             {
-                Console.WriteLine( i + ": " + args[i]);
+                Logger.debugWriteLine( i + ": " + args[i]);
             }
-            Console.WriteLine();
+            Logger.debugWriteLine();
             try {
                 String opID = args[0];
                 String opURL = args[1];
@@ -298,16 +300,15 @@ namespace Operator {
                 String routing = args[4];
                 String opSpec = args[5];
                 String[] opParams = (args.Length > 6 ? args[6].Split(',') : null);
-                if(Program.debug) {
-                    Console.WriteLine("opID: " + opID);
-                    Console.WriteLine("opURL: " + opURL);
-                    Console.WriteLine("replicaIndex: " + replicaIndex);
-                    Console.WriteLine("inputOps: " + String.Join(" ",inputOps));
-                    Console.WriteLine("routing: " + routing);
-                    Console.WriteLine("opSpec: " + opSpec);
-                    Console.WriteLine("opParams: " + String.Join(" ",opParams));
-                    Console.WriteLine();
-                }
+
+                Logger.debugWriteLine("opID: " + opID);
+                Logger.debugWriteLine("replicaIndex: " + replicaIndex);
+                Logger.debugWriteLine("opURL: " + opURL);
+                Logger.debugWriteLine("inputOps: " + String.Join(" ",inputOps));
+                Logger.debugWriteLine("routing: " + routing);
+                Logger.debugWriteLine("opSpec: " + opSpec);
+                Logger.debugWriteLine("opParams: " + String.Join(" ",opParams));
+                Logger.debugWriteLine();
 
 
                 Operator op = new Operator(opID, opURL, replicaIndex, routing);
@@ -320,7 +321,7 @@ namespace Operator {
                 // FIXME testing
                 op.start();
             }
-            catch (Exception e) { Console.WriteLine(e); }
+            catch (Exception e) { Logger.errorWriteLine(e.ToString()); }
 
             //Console.ReadLine();
         }

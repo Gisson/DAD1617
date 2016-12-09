@@ -19,7 +19,7 @@ namespace Operator.StreamOperators {
             {
                 throw new ArgumentException("invalid Filter condition:" + condition);
             }
-            Console.WriteLine("Filter field " + fieldNumber + condition + value);
+            Logger.debugWriteLine("Filter field " + fieldNumber + condition + value);
             FieldNumber = fieldNumber;
             Condition = condition;
             Value = value;
