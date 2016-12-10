@@ -122,7 +122,7 @@ namespace PuppetMaster {
                 new Thread(() => op.forceFreeze()).Start();
             } else
             {
-                Logger.errorWriteLine("Freeze.execute: OP not found: " + OpID);
+                Logger.errorWriteLine("Freeze.execute: OP not found: " + OpID + " rep " + ReplicaIndex);
             }
         }
     }
@@ -146,7 +146,7 @@ namespace PuppetMaster {
             }
             else
             {
-                Logger.errorWriteLine("Unfreeze.execute: OP not found: " + OpID);
+                Logger.errorWriteLine("Unfreeze.execute: OP not found: " + OpID + " rep " + ReplicaIndex);
             }
         }
     }
