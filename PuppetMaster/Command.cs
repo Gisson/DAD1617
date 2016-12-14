@@ -117,7 +117,7 @@ namespace PuppetMaster {
 
         public void execute() {
             IOperatorService op = PuppetMaster.getOperator(OpID, ReplicaIndex);
-            if (op == null)
+            if (op != null)
             {
                 new Thread(() => op.forceFreeze()).Start();
             } else
@@ -140,7 +140,7 @@ namespace PuppetMaster {
         public void execute()
         {
             IOperatorService op = PuppetMaster.getOperator(OpID, ReplicaIndex);
-            if (op == null)
+            if (op != null)
             {
                 new Thread(() => op.forceUnfreeze()).Start();
             }
