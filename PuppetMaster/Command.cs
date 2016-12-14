@@ -159,9 +159,11 @@ namespace PuppetMaster {
             Millisec = millisec;
         }
 
-        public void execute() {
+        public void execute()
+        {
+            PuppetMaster.receiveLog("", "wait " + Millisec);
             Thread.Sleep(Millisec);
-            PuppetMaster.receiveLog("", "wait");
+            PuppetMaster.receiveLog("", "wait done");
         }
     }
 
