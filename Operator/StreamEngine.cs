@@ -84,6 +84,9 @@ namespace Operator {
                                 Logger.debugWriteLine("StreamEngine: output[0] " + tuple.ElementAt(0));
                                 /* TODO log the output tuple to the PM */
                                 route.outputTuple(tuple);
+                                String t = String.Join(" | ", tuple);
+
+                                Operator.pms.writeIntoLog(Operator.myOpId, "output: " + t) ;
                             }
                             Thread.Sleep(Interval);
                         }

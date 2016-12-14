@@ -20,7 +20,7 @@ namespace Operator {
     public class Operator : IOperator, ICommandableOperator {
 
         public static readonly string[] TRY_PATHS = { "", "InputFiles\\", "..\\..\\..\\InputFiles\\" };
-        string myOpId;
+        public static string myOpId;
         string myOpURL;
         string myRoutingPolicy;
         int myReplicaIndex;
@@ -28,7 +28,7 @@ namespace Operator {
         /// <summary> OpId, replicaURL[] </summary>
         IDictionary<String, IList<IOperatorService>> outputOps;
 
-        private IPuppetMasterService pms;
+        public static IPuppetMasterService pms;
         private const String PMS_URL = "tcp://localhost:10000/pms";
 
 
