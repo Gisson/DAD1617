@@ -25,6 +25,7 @@ namespace Operator {
         string myRoutingPolicy;
         int myReplicaIndex;
         List<string> inputOpURLs;
+        private int initialInterval = 100;
         /// <summary> OpId, replicaURL[] </summary>
         IDictionary<String, IList<IOperatorService>> outputOps;
 
@@ -195,6 +196,7 @@ namespace Operator {
                 r = new Routing.Primary(outputOps);
             }
             engine = new StreamEngine(streamInputs, streamOp, r);
+            engine.Interval = initialInterval;
             engine.start();
             //throw new NotImplementedException();
         }
@@ -203,7 +205,10 @@ namespace Operator {
             //sleep between consecutive events
             pms.writeIntoLog(myOpId, "interval " + milliseconds);
             // the setter has a lock mechanism
-            engine.Interval = milliseconds;
+            if (engine == null)
+                initialInterval = milliseconds;
+            else
+                engine.Interval = milliseconds;
         }
 
         public void freeze() {
